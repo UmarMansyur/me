@@ -83,7 +83,7 @@
 <div
 	class="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[30px_30px]"
 ></div>
-<div class="mx-auto max-w-6xl px-4 py-16 sm:px-6 lg:px-8">
+<div class="mx-auto md:max-w-[80vw] px-4 py-16 sm:px-6 lg:px-8">
 	<!-- Header -->
 	<div class="mb-12">
 		<h1 class="section-title mb-4">Certificates</h1>

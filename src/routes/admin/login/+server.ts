@@ -1,6 +1,5 @@
 import type { RequestHandler } from './$types';
-
-const ADMIN_PASSWORD = 'admin123'; // Change this in production
+import { ADMIN_PASSWORD } from '$env/static/private';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const { password } = await request.json();
