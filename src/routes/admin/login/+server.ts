@@ -1,10 +1,10 @@
 import type { RequestHandler } from './$types';
-import { ADMIN_PASSWORD } from '$env/static/private';
+import { env } from '$env/dynamic/public';
 
 export const POST: RequestHandler = async ({ request, cookies }) => {
 	const { password } = await request.json();
 
-	if (password === ADMIN_PASSWORD) {
+	if (password === env.PUBLIC_ADMIN_PASSWORD) {
 		cookies.set('admin_session', 'authenticated', {
 			path: '/',
 			httpOnly: true,
