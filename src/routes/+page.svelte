@@ -281,7 +281,7 @@
         class="text-4xl font-bold leading-tight text-gray-700 sm:text-5xl lg:text-6xl animate-slide-up"
       >
         Hi, I'm <span class="gradient-text"
-          >{displayProfile.name.split(" ")[0]}</span
+          >{displayProfile.name.split(" ")[1]}</span
         >
         <span class="block mt-2 text-gray-500">
           {displayProfile.title}
