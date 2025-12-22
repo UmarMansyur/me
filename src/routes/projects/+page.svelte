@@ -4,6 +4,7 @@
 	import * as Ri from "svelte-icons-pack/ri";
 	import * as Si from "svelte-icons-pack/si";
 	import * as Bi from "svelte-icons-pack/bi";
+	import Skeleton from "$lib/components/Skeleton.svelte";
 	import { onMount } from "svelte";
 
 	interface Project {
@@ -23,6 +24,7 @@
 	let activeFilter = $state("All");
 	let allTags = $state<string[]>(["All"]);
 	let currentPage = $state(1);
+	let isLoading = $state(true);
 	const itemsPerPage = 6;
 
 	const tagConfig: Record<string, { icon: any; color: string }> = {
@@ -137,23 +139,27 @@
 	];
 
 	onMount(async () => {
-		const res = await fetch("/api/projects");
-		if (res.ok) {
-			const data = await res.json();
-			if (data.length > 0) {
-				projects = data;
-				const tags = new Set<string>();
-				data.forEach((p: Project) => {
-					p.tags.split(",").forEach((t) => {
-						if (t.trim()) tags.add(t.trim());
+		try {
+			const res = await fetch("/api/projects");
+			if (res.ok) {
+				const data = await res.json();
+				if (data.length > 0) {
+					projects = data;
+					const tags = new Set<string>();
+					data.forEach((p: Project) => {
+						p.tags.split(",").forEach((t) => {
+							if (t.trim()) tags.add(t.trim());
+						});
 					});
-				});
-				allTags = ["All", ...Array.from(tags)];
+					allTags = ["All", ...Array.from(tags)];
+				} else {
+					projects = defaultProjects;
+				}
 			} else {
 				projects = defaultProjects;
 			}
-		} else {
-			projects = defaultProjects;
+		} finally {
+			isLoading = false;
 		}
 	});
 
@@ -215,7 +221,23 @@
 	</div>
 
 	<!-- Projects Grid -->
-	{#if paginatedProjects.length > 0}
+	{#if isLoading}
+		<div class="grid gap-6 md:grid-cols-3">
+			{#each Array(6) as _}
+				<div class="border border-gray-200 rounded-xl overflow-hidden bg-white">
+					<Skeleton variant="rect" height="192px" />
+					<div class="px-5 py-3 space-y-3">
+						<Skeleton variant="text" width="70%" height="20px" />
+						<Skeleton variant="text" width="100%" />
+						<div class="flex gap-2">
+							<Skeleton variant="circle" width="24px" height="24px" />
+							<Skeleton variant="circle" width="24px" height="24px" />
+						</div>
+					</div>
+				</div>
+			{/each}
+		</div>
+	{:else if paginatedProjects.length > 0}
 		<div class="grid gap-6 md:grid-cols-3">
 			{#each paginatedProjects as project (project.id)}
 				<a

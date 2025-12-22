@@ -35,6 +35,8 @@
   } from "svelte-icons-pack/bi";
   import { Icon } from "svelte-icons-pack";
 
+  import Skeleton from "$lib/components/Skeleton.svelte";
+
   interface Profile {
     name: string;
     title: string;
@@ -89,8 +91,16 @@
   let profile = $state<Profile | null>(null);
   let skills = $state<Skill[]>([]);
   let projects = $state<Project[]>([]);
-  let siteStats = $state({ visitors: 0, likes: 0, dislikes: 0, userReaction: null as string | null });
-  let testimonials = $state<Array<{ id: number; name: string; message: string; rating: number }>>([]);
+  let siteStats = $state({
+    visitors: 0,
+    likes: 0,
+    dislikes: 0,
+    userReaction: null as string | null,
+  });
+  let testimonials = $state<
+    Array<{ id: number; name: string; message: string; rating: number }>
+  >([]);
+  let isLoading = $state(true);
 
   const defaultProfile = {
     name: "Muhammad Umar Mansyur",
@@ -164,7 +174,7 @@
     await fetch("/api/stats", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: "visit" })
+      body: JSON.stringify({ action: "visit" }),
     });
   }
 
@@ -172,7 +182,7 @@
     const res = await fetch("/api/stats", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: type })
+      body: JSON.stringify({ action: type }),
     });
     if (res.ok) {
       siteStats = await res.json();
@@ -180,36 +190,41 @@
   }
 
   onMount(async () => {
-    const [profileRes, skillsRes, projectsRes, statsRes, testimonialsRes] = await Promise.all([
-      fetch("/api/profile"),
-      fetch("/api/skills"),
-      fetch("/api/projects?featured=true"),
-      fetch("/api/stats"),
-      fetch("/api/testimonials"),
-    ]);
+    try {
+      const [profileRes, skillsRes, projectsRes, statsRes, testimonialsRes] =
+        await Promise.all([
+          fetch("/api/profile"),
+          fetch("/api/skills"),
+          fetch("/api/projects?featured=true"),
+          fetch("/api/stats"),
+          fetch("/api/testimonials"),
+        ]);
 
-    if (profileRes.ok) {
-      const data = await profileRes.json();
-      if (data) profile = data;
+      if (profileRes.ok) {
+        const data = await profileRes.json();
+        if (data) profile = data;
+      }
+
+      if (skillsRes.ok) {
+        skills = await skillsRes.json();
+      }
+
+      if (projectsRes.ok) {
+        projects = await projectsRes.json();
+      }
+
+      if (statsRes.ok) {
+        siteStats = await statsRes.json();
+      }
+
+      if (testimonialsRes.ok) {
+        testimonials = await testimonialsRes.json();
+      }
+
+      recordVisit();
+    } finally {
+      isLoading = false;
     }
-
-    if (skillsRes.ok) {
-      skills = await skillsRes.json();
-    }
-
-    if (projectsRes.ok) {
-      projects = await projectsRes.json();
-    }
-
-    if (statsRes.ok) {
-      siteStats = await statsRes.json();
-    }
-
-    if (testimonialsRes.ok) {
-      testimonials = await testimonialsRes.json();
-    }
-
-    recordVisit();
   });
 
   const displayProfile = $derived(profile || defaultProfile);
@@ -274,12 +289,20 @@
       </h1>
 
       <!-- Description -->
-      <p
-        class="mt-6 text-lg text-dark-400 leading-relaxed max-w-2xl animate-slide-up"
-        style="animation-delay: 0.1s"
-      >
-        {displayProfile.description}
-      </p>
+      {#if isLoading}
+        <div class="mt-6 space-y-2">
+          <Skeleton variant="text" width="90%" />
+          <Skeleton variant="text" width="80%" />
+          <Skeleton variant="text" width="60%" />
+        </div>
+      {:else}
+        <p
+          class="mt-6 text-lg text-dark-400 leading-relaxed max-w-2xl animate-slide-up"
+          style="animation-delay: 0.1s"
+        >
+          {displayProfile.description}
+        </p>
+      {/if}
 
       <!-- Location -->
       <div
@@ -338,60 +361,92 @@
         <h3 class="text-lg font-semibold text-gray-700 mb-2">Site Stats</h3>
 
         <div class="flex gap-10">
-          <!-- Visitors Count -->
-          <div class="stat-card group">
-            <div class="flex items-center gap-3">
-              <div class="stat-icon">
-                <Eye size={24} />
+          {#if isLoading}
+            {#each Array(3) as _}
+              <div class="stat-card">
+                <div class="flex items-center gap-3">
+                  <Skeleton variant="circle" width="48px" height="48px" />
+                  <div class="space-y-2">
+                    <Skeleton variant="text" width="40px" height="24px" />
+                    <Skeleton variant="text" width="60px" height="16px" />
+                  </div>
+                </div>
               </div>
-              <div>
-                <p class="text-2xl font-bold text-gray-800">{siteStats.visitors}</p>
-                <p class="text-sm text-gray-500">Visitors</p>
+            {/each}
+          {:else}
+            <!-- Visitors Count -->
+            <div class="stat-card group">
+              <div class="flex items-center gap-3">
+                <div class="stat-icon">
+                  <Eye size={24} />
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-gray-800">
+                    {siteStats.visitors}
+                  </p>
+                  <p class="text-sm text-gray-500">Visitors</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Likes -->
-          <div class="stat-card group">
-            <div class="flex items-center gap-3">
-              <div class="stat-icon">
-                <ThumbsUp size={24} />
-              </div>
-              <div>
-                <p class="text-2xl font-bold text-gray-800">{siteStats.likes}</p>
-                <p class="text-sm text-gray-500">Likes</p>
+            <!-- Likes -->
+            <div class="stat-card group">
+              <div class="flex items-center gap-3">
+                <div class="stat-icon">
+                  <ThumbsUp size={24} />
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-gray-800">
+                    {siteStats.likes}
+                  </p>
+                  <p class="text-sm text-gray-500">Likes</p>
+                </div>
               </div>
             </div>
-          </div>
 
-          <!-- Dislikes -->
-          <div class="stat-card group">
-            <div class="flex items-center gap-3">
-              <div class="stat-icon">
-                <ThumbsDown size={24} />
-              </div>
-              <div>
-                <p class="text-2xl font-bold text-gray-800">{siteStats.dislikes}</p>
-                <p class="text-sm text-gray-500">Dislikes</p>
+            <!-- Dislikes -->
+            <div class="stat-card group">
+              <div class="flex items-center gap-3">
+                <div class="stat-icon">
+                  <ThumbsDown size={24} />
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-gray-800">
+                    {siteStats.dislikes}
+                  </p>
+                  <p class="text-sm text-gray-500">Dislikes</p>
+                </div>
               </div>
             </div>
-          </div>
+          {/if}
         </div>
 
         <!-- Interactive Buttons -->
         <div class="flex gap-2 mt-4">
           <button
-            class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 {siteStats.userReaction === 'like' ? 'bg-blue-100 text-blue-600' : 'text-blue-600 hover:bg-blue-50'}"
-            onclick={() => handleReaction('like')}
+            class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 {siteStats.userReaction ===
+            'like'
+              ? 'bg-blue-100 text-blue-600'
+              : 'text-blue-600 hover:bg-blue-50'}"
+            onclick={() => handleReaction("like")}
           >
-            <ThumbsUp size={18} class={siteStats.userReaction === 'like' ? 'fill-blue-600' : ''} />
+            <ThumbsUp
+              size={18}
+              class={siteStats.userReaction === "like" ? "fill-blue-600" : ""}
+            />
             <span class="text-sm font-medium">Like</span>
           </button>
           <button
-            class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 {siteStats.userReaction === 'dislike' ? 'bg-red-100 text-red-600' : 'text-gray-600 hover:bg-gray-100'}"
-            onclick={() => handleReaction('dislike')}
+            class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 {siteStats.userReaction ===
+            'dislike'
+              ? 'bg-red-100 text-red-600'
+              : 'text-gray-600 hover:bg-gray-100'}"
+            onclick={() => handleReaction("dislike")}
           >
-            <ThumbsDown size={18} class={siteStats.userReaction === 'dislike' ? 'fill-red-600' : ''} />
+            <ThumbsDown
+              size={18}
+              class={siteStats.userReaction === "dislike" ? "fill-red-600" : ""}
+            />
             <span class="text-sm font-medium">Dislike</span>
           </button>
         </div>
@@ -476,7 +531,24 @@
       </a>
     </div>
 
-    {#if projects.length > 0}
+    {#if isLoading}
+      <div class="grid gap-6 md:grid-cols-2">
+        {#each Array(4) as _}
+          <div class="card p-0 overflow-hidden">
+            <Skeleton variant="rect" height="160px" />
+            <div class="p-4 space-y-3">
+              <Skeleton variant="text" width="60%" height="24px" />
+              <Skeleton variant="text" width="90%" />
+              <div class="flex gap-2">
+                <Skeleton variant="text" width="40px" height="20px" />
+                <Skeleton variant="text" width="40px" height="20px" />
+                <Skeleton variant="text" width="40px" height="20px" />
+              </div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    {:else if projects.length > 0}
       <div class="grid gap-6 md:grid-cols-2">
         {#each projects.slice(0, 4) as project}
           <article class="card card-hover group overflow-hidden p-0">
@@ -579,13 +651,36 @@
 </section>
 
 <!-- Testimonials Section -->
-{#if testimonials.length > 0}
+{#if isLoading}
+  <section class="py-20 overflow-hidden">
+    <div class="mx-auto md:max-w-[80vw] px-4 sm:px-6 lg:px-8 mb-10">
+      <Skeleton variant="text" width="200px" height="32px" class="mb-2" />
+      <Skeleton variant="text" width="150px" height="20px" />
+    </div>
+    <div class="flex gap-6 px-10 overflow-hidden">
+      {#each Array(4) as _}
+        <div class="testimonial-card">
+          <div class="flex gap-1 mb-3">
+            {#each Array(5) as _}
+              <div class="size-4 bg-gray-200 rounded-full animate-pulse"></div>
+            {/each}
+          </div>
+          <div class="space-y-2 mb-3">
+            <Skeleton variant="text" width="100%" />
+            <Skeleton variant="text" width="90%" />
+          </div>
+          <Skeleton variant="text" width="40%" />
+        </div>
+      {/each}
+    </div>
+  </section>
+{:else if testimonials.length > 0}
   <section class="py-20 overflow-hidden">
     <div class="mx-auto md:max-w-[80vw] px-4 sm:px-6 lg:px-8 mb-10">
       <h2 class="section-title">What People Say</h2>
       <p class="mt-2 section-subtitle">Feedback from visitors</p>
     </div>
-    
+
     <div class="relative">
       <div class="marquee-container">
         <div class="marquee-content">
@@ -593,48 +688,31 @@
             <div class="testimonial-card">
               <div class="flex gap-0.5 mb-3">
                 {#each Array(5) as _, i}
-                  <svg class="w-4 h-4 {i < testimonial.rating ? 'text-yellow-400' : 'text-gray-300'}" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                  <svg
+                    class="w-4 h-4 {i < testimonial.rating
+                      ? 'text-yellow-400'
+                      : 'text-gray-300'}"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                  >
+                    <path
+                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                    />
                   </svg>
                 {/each}
               </div>
-              <p class="text-sm text-gray-600 mb-3 line-clamp-3">"{testimonial.message}"</p>
-              <p class="text-sm font-semibold text-gray-800">— {testimonial.name}</p>
+              <p class="text-sm text-gray-600 mb-3 line-clamp-3">
+                "{testimonial.message}"
+              </p>
+              <p class="text-sm font-semibold text-gray-800">
+                — {testimonial.name}
+              </p>
             </div>
           {/each}
         </div>
       </div>
     </div>
   </section>
-
-  <style>
-    .marquee-container {
-      overflow: hidden;
-      width: 100%;
-    }
-    .marquee-content {
-      display: flex;
-      gap: 1.5rem;
-      animation: marquee 30s linear infinite;
-      width: max-content;
-    }
-    .marquee-content:hover {
-      animation-play-state: paused;
-    }
-    .testimonial-card {
-      flex-shrink: 0;
-      width: 300px;
-      padding: 1.5rem;
-      background: white;
-      border-radius: 1rem;
-      border: 1px solid #e5e7eb;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    }
-    @keyframes marquee {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-  </style>
 {/if}
 
 <!-- CTA Section -->
@@ -655,3 +733,36 @@
     </div>
   </div>
 </section>
+
+<style>
+  .marquee-container {
+    overflow: hidden;
+    width: 100%;
+  }
+  .marquee-content {
+    display: flex;
+    gap: 1.5rem;
+    animation: marquee 30s linear infinite;
+    width: max-content;
+  }
+  .marquee-content:hover {
+    animation-play-state: paused;
+  }
+  .testimonial-card {
+    flex-shrink: 0;
+    width: 300px;
+    padding: 1.5rem;
+    background: white;
+    border-radius: 1rem;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  }
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+</style>

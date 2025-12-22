@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { Award, ExternalLink, Calendar } from "lucide-svelte";
+	import Skeleton from "$lib/components/Skeleton.svelte";
 	import { onMount } from "svelte";
 
 	interface Certificate {
@@ -15,6 +16,7 @@
 	}
 
 	let certificates = $state<Certificate[]>([]);
+	let isLoading = $state(true);
 
 	const defaultCertificates: Certificate[] = [
 		{
@@ -59,16 +61,20 @@
 	}
 
 	onMount(async () => {
-		const res = await fetch("/api/certificates");
-		if (res.ok) {
-			const data = await res.json();
-			if (data.length > 0) {
-				certificates = data;
+		try {
+			const res = await fetch("/api/certificates");
+			if (res.ok) {
+				const data = await res.json();
+				if (data.length > 0) {
+					certificates = data;
+				} else {
+					certificates = defaultCertificates;
+				}
 			} else {
 				certificates = defaultCertificates;
 			}
-		} else {
-			certificates = defaultCertificates;
+		} finally {
+			isLoading = false;
 		}
 	});
 </script>
@@ -93,7 +99,31 @@
 	</div>
 
 	<!-- Certificates Grid -->
-	{#if certificates.length > 0}
+	{#if isLoading}
+		<div class="grid gap-6 md:grid-cols-2">
+			{#each Array(4) as _}
+				<div class="border bg-white border-gray-200 rounded-lg p-6">
+					<div class="flex items-start justify-between mb-6">
+						<div class="flex items-center gap-4 mt-3">
+							<Skeleton variant="circle" width="56px" height="56px" />
+							<div class="space-y-2">
+								<Skeleton variant="text" width="180px" height="20px" />
+								<Skeleton variant="text" width="120px" height="16px" />
+							</div>
+						</div>
+					</div>
+					<div class="space-y-2 mb-4">
+						<Skeleton variant="text" width="100%" />
+						<Skeleton variant="text" width="90%" />
+					</div>
+					<div class="flex gap-4">
+						<Skeleton variant="text" width="120px" />
+						<Skeleton variant="text" width="120px" />
+					</div>
+				</div>
+			{/each}
+		</div>
+	{:else if certificates.length > 0}
 		<div class="grid gap-6 md:grid-cols-2">
 			{#each certificates as cert (cert.id)}
 				<article

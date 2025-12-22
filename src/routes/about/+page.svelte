@@ -7,6 +7,7 @@
 		Heart,
 		Code2,
 	} from "lucide-svelte";
+	import Skeleton from "$lib/components/Skeleton.svelte";
 	import { onMount } from "svelte";
 
 	interface Profile {
@@ -25,6 +26,7 @@
 
 	let profile = $state<Profile | null>(null);
 	let aboutContents = $state<Record<string, AboutContent>>({});
+	let isLoading = $state(true);
 
 	const defaultProfile = {
 		name: "Muhammad Umar Mansyur",
@@ -39,38 +41,45 @@
 		background: {
 			section: "background",
 			title: "Background",
-			content: "I specialize in building full-stack web applications using modern technologies like Laravel, SvelteKit, and TypeScript. I enjoy solving complex problems and turning ideas into functional, beautiful applications."
+			content:
+				"I specialize in building full-stack web applications using modern technologies like Laravel, SvelteKit, and TypeScript. I enjoy solving complex problems and turning ideas into functional, beautiful applications.",
 		},
 		specialization: {
 			section: "specialization",
 			title: "Specialization",
-			content: "Full-stack web development with expertise in Laravel, SvelteKit, TypeScript, and modern database technologies."
+			content:
+				"Full-stack web development with expertise in Laravel, SvelteKit, TypeScript, and modern database technologies.",
 		},
 		hobbies: {
 			section: "hobbies",
 			title: "When I'm Not Coding",
-			content: "When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or enjoying a good cup of coffee while reading tech articles."
-		}
+			content:
+				"When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or enjoying a good cup of coffee while reading tech articles.",
+		},
 	};
 
 	onMount(async () => {
-		const [profileRes, aboutRes] = await Promise.all([
-			fetch("/api/profile"),
-			fetch("/api/about")
-		]);
+		try {
+			const [profileRes, aboutRes] = await Promise.all([
+				fetch("/api/profile"),
+				fetch("/api/about"),
+			]);
 
-		if (profileRes.ok) {
-			const data = await profileRes.json();
-			if (data) profile = data;
-		}
-
-		if (aboutRes.ok) {
-			const data = await aboutRes.json();
-			if (data && data.length > 0) {
-				data.forEach((item: AboutContent) => {
-					aboutContents[item.section] = item;
-				});
+			if (profileRes.ok) {
+				const data = await profileRes.json();
+				if (data) profile = data;
 			}
+
+			if (aboutRes.ok) {
+				const data = await aboutRes.json();
+				if (data && data.length > 0) {
+					data.forEach((item: AboutContent) => {
+						aboutContents[item.section] = item;
+					});
+				}
+			}
+		} finally {
+			isLoading = false;
 		}
 	});
 
@@ -78,7 +87,7 @@
 	const displayAbout = $derived({
 		background: aboutContents.background || defaultAbout.background,
 		specialization: aboutContents.specialization || defaultAbout.specialization,
-		hobbies: aboutContents.hobbies || defaultAbout.hobbies
+		hobbies: aboutContents.hobbies || defaultAbout.hobbies,
 	});
 
 	const stats = [
@@ -119,39 +128,79 @@
 		<div class="lg:col-span-2 space-y-8">
 			<!-- Bio Section -->
 			<div class="card">
-				<h2 class="text-xl font-semibold text-dark-100 mb-4 flex items-center gap-2">
-					<GraduationCap size={24} class="text-blue-500" />
-					{displayAbout.background.title}
-				</h2>
-				<div class="space-y-4 text-dark-400 leading-relaxed">
-					<p>
-						Hello! I'm <span class="text-dark-100 font-medium">{displayProfile.name}</span>, 
-						a {displayProfile.title} based in {displayProfile.location || "Madura, Indonesia"}.
-					</p>
-					<p>{displayProfile.description}</p>
-					<p>{displayAbout.background.content}</p>
-				</div>
+				{#if isLoading}
+					<div class="flex items-center gap-2 mb-4">
+						<Skeleton variant="circle" width="24px" height="24px" />
+						<Skeleton variant="text" width="120px" height="24px" />
+					</div>
+					<div class="space-y-4">
+						<Skeleton variant="text" width="90%" />
+						<Skeleton variant="text" width="85%" />
+						<Skeleton variant="text" width="80%" />
+					</div>
+				{:else}
+					<h2
+						class="text-xl font-semibold text-dark-100 mb-4 flex items-center gap-2"
+					>
+						<GraduationCap size={24} class="text-blue-500" />
+						{displayAbout.background.title}
+					</h2>
+					<div class="space-y-4 text-dark-400 leading-relaxed">
+						<p>
+							Hello! I'm <span class="text-dark-100 font-medium"
+								>{displayProfile.name}</span
+							>, a {displayProfile.title} based in {displayProfile.location ||
+								"Madura, Indonesia"}.
+						</p>
+						<p>{displayProfile.description}</p>
+						<p>{displayAbout.background.content}</p>
+					</div>
+				{/if}
 			</div>
 
 			<!-- Specialization Section -->
-			{#if displayAbout.specialization.content}
+			{#if isLoading}
 				<div class="card">
-					<h2 class="text-xl font-semibold text-dark-100 mb-4 flex items-center gap-2">
+					<div class="flex items-center gap-2 mb-4">
+						<Skeleton variant="circle" width="24px" height="24px" />
+						<Skeleton variant="text" width="150px" height="24px" />
+					</div>
+					<Skeleton variant="text" width="100%" />
+				</div>
+			{:else if displayAbout.specialization.content}
+				<div class="card">
+					<h2
+						class="text-xl font-semibold text-dark-100 mb-4 flex items-center gap-2"
+					>
 						<Code2 size={24} class="text-blue-500" />
 						{displayAbout.specialization.title}
 					</h2>
-					<p class="text-dark-400 leading-relaxed">{displayAbout.specialization.content}</p>
+					<p class="text-dark-400 leading-relaxed">
+						{displayAbout.specialization.content}
+					</p>
 				</div>
 			{/if}
 
 			<!-- Hobbies Section -->
-			{#if displayAbout.hobbies.content}
+			{#if isLoading}
 				<div class="card">
-					<h2 class="text-xl font-semibold text-dark-100 mb-4 flex items-center gap-2">
+					<div class="flex items-center gap-2 mb-4">
+						<Skeleton variant="circle" width="24px" height="24px" />
+						<Skeleton variant="text" width="180px" height="24px" />
+					</div>
+					<Skeleton variant="text" width="100%" />
+				</div>
+			{:else if displayAbout.hobbies.content}
+				<div class="card">
+					<h2
+						class="text-xl font-semibold text-dark-100 mb-4 flex items-center gap-2"
+					>
 						<Coffee size={24} class="text-blue-500" />
 						{displayAbout.hobbies.title}
 					</h2>
-					<p class="text-dark-400 leading-relaxed">{displayAbout.hobbies.content}</p>
+					<p class="text-dark-400 leading-relaxed">
+						{displayAbout.hobbies.content}
+					</p>
 				</div>
 			{/if}
 
