@@ -2,6 +2,7 @@
 	import { ShieldCheck, Loader2, ArrowRight } from "lucide-svelte";
 
 	let password = $state("");
+	let username = $state("");
 	let error = $state("");
 	let isLoading = $state(false);
 
@@ -11,10 +12,10 @@
 		error = "";
 
 		try {
-			const response = await fetch("/admin/login", {
+			const response = await fetch("/api/auth/login", {
 				method: "POST",
 				headers: { "Content-Type": "application/json" },
-				body: JSON.stringify({ password }),
+				body: JSON.stringify({ password, username }),
 			});
 
 			if (response.ok) {
@@ -59,6 +60,22 @@
 					</div>
 				{/if}
 
+				<div>
+					<label
+						for="text"
+						class="mb-2 block text-sm font-medium text-dark-300"
+					>
+						Username
+					</label>
+					<input
+						type="username"
+						id="username"
+						bind:value={username}
+						placeholder="Enter admin username"
+						class="input-field"
+						required
+					/>
+				</div>
 				<div>
 					<label
 						for="password"

@@ -7,6 +7,8 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
   try {
     const { username, password } = await request.json();
 
+    console.log(username, password);
+
     if (!username || !password) {
       return json({ message: 'Username and password are required' }, { status: 400 });
     }
@@ -19,7 +21,7 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
       return json({ message: 'Invalid username or password' }, { status: 401 });
     }
 
-    cookies.set('admin_session', admin.id.toString(), {
+    cookies.set('admin_session', 'authenticated', {
       path: '/',
       httpOnly: true,
       sameSite: 'strict',

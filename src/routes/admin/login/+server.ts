@@ -8,9 +8,9 @@ export const POST: RequestHandler = async ({ request, cookies }) => {
 		cookies.set('admin_session', 'authenticated', {
 			path: '/',
 			httpOnly: true,
-			secure: false, // Set to true in production with HTTPS
+			secure: false,
 			sameSite: 'strict',
-			maxAge: 60 * 60 * 24 // 24 hours
+			maxAge: 60 * 60 * 24
 		});
 
 		return new Response(JSON.stringify({ success: true }), {
