@@ -32,7 +32,7 @@
           <Terminal size={20} />
         </div>
         <span class="text-lg font-semibold text-black"
-          >umar<span class="text-blue-500">.dev</span></span
+          >ustad<span class="text-blue-500">.dev</span></span
         >
       </a>
 
