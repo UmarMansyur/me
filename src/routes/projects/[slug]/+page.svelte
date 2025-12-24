@@ -57,7 +57,7 @@
 		PHP: { icon: Si.SiPhp, color: "#777BB4" },
 		Vue: { icon: Si.SiVuedotjs, color: "#4FC08D" },
 		Next: { icon: Si.SiNextdotjs, color: "#000000" },
-		Node: { icon: Si.SiNodedotjs, color: "#339933" },
+		NodeJs: { icon: Si.SiNodedotjs, color: "#339933" },
 		MongoDB: { icon: Si.SiMongodb, color: "#47A248" },
 		PostgreSQL: { icon: Si.SiPostgresql, color: "#4169E1" },
 		API: { icon: null, color: "#6366F1" },
@@ -86,6 +86,8 @@
 		JavaScript: { icon: Si.SiJavascript, color: "#F7DF1E" },
 		"Framer Motion": { icon: Si.SiFramer, color: "#0055FF" },
 		ExpressJs: { icon: Si.SiExpress, color: "#0055FF" },
+		HTML: { icon: Si.SiHtml5, color: "#E34F26" },
+		CSS: { icon: Si.SiCss3, color: "#1572B6" },
 	};
 
 	onMount(async () => {

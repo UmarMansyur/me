@@ -18,21 +18,10 @@
     SiTailwindcss,
     SiPostgresql,
     SiMongodb,
-    SiRedis,
-    SiPrisma,
-    SiTypescript,
-    SiChartdotjs,
-    SiPhp,
-    SiReact,
-    SiVuedotjs,
-    SiNextdotjs,
-    SiNodedotjs,
   } from "svelte-icons-pack/si";
-  import {
-    BiLogoTypescript,
-    BiLogoNodejs,
-    BiLogoPhp,
-  } from "svelte-icons-pack/bi";
+  import * as Si from "svelte-icons-pack/si";
+  import * as Ri from "svelte-icons-pack/ri";
+  import * as Bi from "svelte-icons-pack/bi";
   import { Icon } from "svelte-icons-pack";
 
   import Skeleton from "$lib/components/Skeleton.svelte";
@@ -64,28 +53,61 @@
     featured: boolean;
   }
 
-  const tagConfig: Record<string, { icon: any; color: string; bg: string }> = {
-    Laravel: { icon: SiLaravel, color: "#FF2D20", bg: "bg-red-50" },
-    MySQL: { icon: SiMysql, color: "#4479A1", bg: "bg-blue-50" },
-    TailwindCSS: { icon: SiTailwindcss, color: "#06B6D4", bg: "bg-cyan-50" },
+  const tagConfig: Record<string, { icon: any; color: string }> = {
+    Laravel: { icon: Si.SiLaravel, color: "#FF2D20" },
     SvelteKit: {
-      icon: RiLogosSvelteFill,
+      icon: Ri.RiLogosSvelteFill,
       color: "#FF3E00",
-      bg: "bg-orange-50",
     },
-    Svelte: { icon: RiLogosSvelteFill, color: "#FF3E00", bg: "bg-orange-50" },
-    Prisma: { icon: SiPrisma, color: "#2D3748", bg: "bg-gray-100" },
-    TypeScript: { icon: SiTypescript, color: "#3178C6", bg: "bg-blue-50" },
-    "Chart.js": { icon: SiChartdotjs, color: "#FF6384", bg: "bg-pink-50" },
-    WebSocket: { icon: null, color: "#010101", bg: "bg-gray-100" },
-    PHP: { icon: SiPhp, color: "#777BB4", bg: "bg-purple-50" },
-    React: { icon: SiReact, color: "#61DAFB", bg: "bg-cyan-50" },
-    Vue: { icon: SiVuedotjs, color: "#4FC08D", bg: "bg-green-50" },
-    "Next.js": { icon: SiNextdotjs, color: "#000000", bg: "bg-gray-100" },
-    "Node.js": { icon: SiNodedotjs, color: "#339933", bg: "bg-green-50" },
-    MongoDB: { icon: SiMongodb, color: "#47A248", bg: "bg-green-50" },
-    PostgreSQL: { icon: SiPostgresql, color: "#4169E1", bg: "bg-blue-50" },
-    API: { icon: null, color: "#6366F1", bg: "bg-indigo-50" },
+    Svelte: {
+      icon: Ri.RiLogosSvelteFill,
+      color: "#FF3E00",
+    },
+    MySQL: { icon: Si.SiMysql, color: "#4479A1" },
+    TailwindCSS: { icon: Si.SiTailwindcss, color: "#06B6D4" },
+    Bootstrap: { icon: Si.SiBootstrap, color: "#7952B3" },
+    CodeIgniter: { icon: Si.SiCodeigniter, color: "#EF4223" },
+    Flutter: { icon: Si.SiFlutter, color: "#02569B" },
+    React: { icon: Si.SiReact, color: "#61DAFB" },
+    Lumen: { icon: Si.SiLumen, color: "#E74430" },
+    Prisma: { icon: Si.SiPrisma, color: "#2D3748" },
+    TypeScript: { icon: Si.SiTypescript, color: "#3178C6" },
+    ChartJs: { icon: Si.SiChartdotjs, color: "#FF6384" },
+    WebSocket: { icon: null, color: "#010101" },
+    PHP: { icon: Si.SiPhp, color: "#777BB4" },
+    Vue: { icon: Si.SiVuedotjs, color: "#4FC08D" },
+    Next: { icon: Si.SiNextdotjs, color: "#000000" },
+    NodeJs: { icon: Si.SiNodedotjs, color: "#339933" },
+    MongoDB: { icon: Si.SiMongodb, color: "#47A248" },
+    PostgreSQL: { icon: Si.SiPostgresql, color: "#4169E1" },
+    API: { icon: null, color: "#6366F1" },
+    GraphQl: { icon: Si.SiGraphql, color: "#E10098" },
+    Redis: { icon: Si.SiRedis, color: "#DC382D" },
+    AWS: { icon: Bi.BiLogoAws, color: "#FF9900" },
+    DigitalOcean: { icon: Si.SiDigitalocean, color: "#0080FF" },
+    Heroku: { icon: Si.SiHeroku, color: "#430098" },
+    Netlify: { icon: Si.SiNetlify, color: "#00C7B7" },
+    Vercel: { icon: Si.SiVercel, color: "#000000" },
+    GitHub: { icon: Si.SiGithub, color: "#181717" },
+    GitLab: { icon: Si.SiGitlab, color: "#FC6D26" },
+    Bitbucket: { icon: Si.SiBitbucket, color: "#0052CC" },
+    Docker: { icon: Si.SiDocker, color: "#2496ED" },
+    Git: { icon: Si.SiGit, color: "#F05032" },
+    vercel: { icon: Si.SiVercel, color: "#000000" },
+    html5: { icon: Si.SiHtml5, color: "#E34F26" },
+    css3: { icon: Si.SiCss3, color: "#1572B6" },
+    javascript: { icon: Si.SiJavascript, color: "#F7DF1E" },
+    bootstrap: { icon: Si.SiBootstrap, color: "#7952B3" },
+    tailwindcss: { icon: Si.SiTailwindcss, color: "#06B6D4" },
+    php: { icon: Si.SiPhp, color: "#777BB4" },
+    mysql: { icon: Si.SiMysql, color: "#4479A1" },
+    ReactQuery: { icon: Si.SiReactquery, color: "#FF4154" },
+    Figma: { icon: Si.SiFigma, color: "#F24E1E" },
+    JavaScript: { icon: Si.SiJavascript, color: "#F7DF1E" },
+    "Framer Motion": { icon: Si.SiFramer, color: "#0055FF" },
+    ExpressJs: { icon: Si.SiExpress, color: "#0055FF" },
+    HTML: { icon: Si.SiHtml5, color: "#E34F26" },
+    CSS: { icon: Si.SiCss3, color: "#1572B6" },
   };
 
   let profile = $state<Profile | null>(null);
@@ -128,45 +150,99 @@
     },
     {
       name: "TypeScript",
-      icon: BiLogoTypescript,
+      icon: Bi.BiLogoTypescript,
       category: "Language",
-      color: "#3178C6", // TypeScript official blue
+      color: "#3178C6",
     },
     {
       name: "Node.js",
-      icon: BiLogoNodejs,
+      icon: Bi.BiLogoNodejs,
       category: "Backend",
-      color: "#339933", // Node.js official green
+      color: "#339933",
     },
     {
       name: "PHP",
-      icon: BiLogoPhp,
+      icon: Bi.BiLogoPhp,
       category: "Backend",
-      color: "#777BB4", // PHP official purple
+      color: "#777BB4",
     },
     {
       name: "MySQL",
       icon: SiMysql,
       category: "Database",
-      color: "#4479A1", // MySQL official blue
+      color: "#4479A1",
     },
     {
       name: "TailwindCSS",
       icon: SiTailwindcss,
       category: "Tools",
-      color: "#06B6D4", // Tailwind official cyan
+      color: "#06B6D4",
     },
     {
       name: "PostgreSQL",
       icon: SiPostgresql,
       category: "Database",
-      color: "#4169E1", // PostgreSQL official blue
+      color: "#4169E1",
     },
     {
       name: "MongoDB",
       icon: SiMongodb,
       category: "Database",
-      color: "#47A248", // MongoDB official green
+      color: "#47A248",
+    },
+    {
+      name: "GraphQL",
+      icon: Si.SiGraphql,
+      category: "Tools",
+      color: "#E10098",
+    },
+    {
+      name: "Redis",
+      icon: Si.SiRedis,
+      category: "Tools",
+      color: "#DC382D",
+    },
+    {
+      name: "Vue",
+      icon: Si.SiVuedotjs,
+      category: "Frontend",
+      color: "#4FC08D",
+    },
+    {
+      name: "React",
+      icon: Si.SiReact,
+      category: "Frontend",
+      color: "#61DAFB",
+    },
+    {
+      name: "Lumen",
+      icon: Si.SiLumen,
+      category: "Backend",
+      color: "#FF2D20",
+    },
+    {
+      name: "Bootstrap",
+      icon: Si.SiBootstrap,
+      category: "Frontend",
+      color: "#7952B3",
+    },
+    {
+      name: "GitHub",
+      icon: Si.SiGithub,
+      category: "Tools",
+      color: "#181717",
+    },
+    {
+      name: "GitLab",
+      icon: Si.SiGitlab,
+      category: "Tools",
+      color: "#FC6D26",
+    },
+    {
+      name: "JavaScript",
+      icon: Si.SiJavascript,
+      category: "Language",
+      color: "#F7DF1E",
     },
   ];
 
@@ -623,7 +699,7 @@
                     bg: "bg-gray-100",
                   }}
                   <span
-                    class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full {config.bg}"
+                    class="inline-flex items-center gap-1 px-2 py-0.5 text-xs font-medium rounded-full {config.color}"
                     style="color: {config.color};"
                   >
                     {#if config.icon}

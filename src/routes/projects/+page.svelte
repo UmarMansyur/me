@@ -80,6 +80,7 @@
 		JavaScript: { icon: Si.SiJavascript, color: "#F7DF1E" },
 		"Framer Motion": { icon: Si.SiFramer, color: "#0055FF" },
 		ExpressJs: { icon: Si.SiExpress, color: "#0055FF" },
+		NodeJS: { icon: Si.SiNodedotjs, color: "#339933" },
 	};
 	const defaultProjects: Project[] = [
 		{
