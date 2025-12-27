@@ -37,7 +37,7 @@
           <Linkedin size={18} />
         </a>
         <a
-          href="mailto:contact@umarmansyur.com"
+          href="mailto:muhammadumarmansyur2001@gmail.com"
           class="flex size-10 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-all hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50"
           aria-label="Email"
         >

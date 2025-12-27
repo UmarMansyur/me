@@ -25,6 +25,7 @@
   import { Icon } from "svelte-icons-pack";
 
   import Skeleton from "$lib/components/Skeleton.svelte";
+  import SEO from "$lib/components/SEO.svelte";
 
   interface Profile {
     name: string;
@@ -306,9 +307,10 @@
   const displayProfile = $derived(profile || defaultProfile);
 </script>
 
-<svelte:head>
-  <title>{displayProfile.name} | {displayProfile.title}</title>
-</svelte:head>
+<SEO
+  title="{displayProfile.name} | {displayProfile.title}"
+  description={displayProfile.description}
+/>
 
 <!-- Hero Section -->
 <div

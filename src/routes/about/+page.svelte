@@ -33,7 +33,7 @@
 		title: "Software Developer",
 		description:
 			"A passionate Software Developer from Madura Dev. I love building modern, user-friendly web applications with cutting-edge technologies.",
-		email: "contact@umarmansyur.com",
+		email: "muhammadumarmansyur2001@gmail.com",
 		location: "Sumenep, Madura",
 	};
 

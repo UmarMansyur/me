@@ -4,19 +4,14 @@
 	import Footer from "$lib/components/Footer.svelte";
 	import { page } from "$app/state";
 
+	import SEO from "$lib/components/SEO.svelte";
+
 	let { children } = $props();
 
 	const isAdminRoute = $derived(page.url.pathname.startsWith("/admin"));
 </script>
 
-<svelte:head>
-	<title>Muhammad Umar Mansyur | Software Developer</title>
-	<meta
-		name="description"
-		content="Personal portfolio of Muhammad Umar Mansyur - Software Developer from Madura Dev. Building modern web applications."
-	/>
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-</svelte:head>
+<SEO />
 
 {#if isAdminRoute}
 	{@render children()}

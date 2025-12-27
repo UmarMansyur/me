@@ -12,6 +12,7 @@
 		Home,
 		LogOut,
 		Menu,
+		BookOpen,
 	} from "lucide-svelte";
 
 	let { children } = $props();
@@ -20,6 +21,7 @@
 		{ href: "/admin", label: "Dashboard", icon: LayoutDashboard },
 		{ href: "/admin/profile", label: "Profile", icon: User },
 		{ href: "/admin/about", label: "About", icon: FileText },
+		{ href: "/admin/blog", label: "Blog", icon: BookOpen },
 		{ href: "/admin/projects", label: "Projects", icon: Folder },
 		{ href: "/admin/experience", label: "Experience", icon: Briefcase },
 		{ href: "/admin/certificates", label: "Certificates", icon: Award },
