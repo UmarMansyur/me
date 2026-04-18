@@ -40,12 +40,12 @@
 
 <div class="relative min-h-screen overflow-hidden">
 	<!-- Enhanced Background -->
-	<div class="absolute inset-0 -z-10 bg-slate-50 dark:bg-slate-950">
+	<div class="absolute inset-0 -z-10 bg-slate-50">
 		<div
-			class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-100 dark:bg-blue-900/10 rounded-full blur-[120px] opacity-60 animate-pulse"
+			class="absolute top-0 left-1/4 w-[500px] h-[500px] bg-blue-100 rounded-full blur-[120px] opacity-60 animate-pulse"
 		></div>
 		<div
-			class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-100 dark:bg-emerald-900/10 rounded-full blur-[120px] opacity-60"
+			class="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-emerald-100 rounded-full blur-[120px] opacity-60"
 		></div>
 	</div>
 
@@ -53,13 +53,13 @@
 		<!-- Header with Animation -->
 		<div class="mb-20 text-center max-w-3xl mx-auto">
 			<div
-				class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 text-sm font-bold mb-6 border border-blue-100 dark:border-blue-800 animate-slide-up"
+				class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-blue-50 text-blue-600 text-sm font-bold mb-6 border border-blue-100 animate-slide-up"
 			>
 				<Sparkles size={16} />
 				Ready for new opportunities
 			</div>
 			<h1
-				class="text-5xl md:text-6xl font-bold text-slate-900 dark:text-white mb-6 font-display animate-slide-up"
+				class="text-5xl md:text-6xl font-bold text-slate-900 mb-6 font-display animate-slide-up"
 				style="animation-delay: 0.1s"
 			>
 				Let's start something <span
@@ -68,7 +68,7 @@
 				>
 			</h1>
 			<p
-				class="text-xl text-slate-600 dark:text-slate-400 animate-slide-up"
+				class="text-xl text-slate-600 animate-slide-up"
 				style="animation-delay: 0.2s"
 			>
 				Pick your preferred way to connect. I'm most active on WhatsApp for
@@ -88,11 +88,11 @@
 						class="absolute -inset-1 bg-gradient-to-r from-emerald-500 to-green-600 rounded-[2.5rem] blur opacity-25 group-hover:opacity-50 transition duration-1000"
 					></div>
 					<div
-						class="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-slate-100 dark:border-slate-800 overflow-hidden"
+						class="relative bg-white rounded-[2.5rem] p-8 md:p-12 shadow-2xl border border-slate-100 overflow-hidden"
 					>
 						<!-- Techy background decoration -->
 						<div
-							class="absolute -right-20 -top-20 w-64 h-64 bg-emerald-50 dark:bg-emerald-900/10 rounded-full blur-3xl transition-transform duration-1000 group-hover:scale-110"
+							class="absolute -right-20 -top-20 w-64 h-64 bg-emerald-50 rounded-full blur-3xl transition-transform duration-1000 group-hover:scale-110"
 						></div>
 
 						<div class="relative z-10">
@@ -104,11 +104,11 @@
 								</div>
 								<div class="text-center md:text-left">
 									<h2
-										class="text-3xl font-bold text-slate-900 dark:text-white mb-2"
+										class="text-3xl font-bold text-slate-900 mb-2"
 									>
 										Direct Message
 									</h2>
-									<p class="text-slate-500 dark:text-slate-400">
+									<p class="text-slate-500">
 										Available via WhatsApp for instant support and project
 										inquiries.
 									</p>
@@ -126,7 +126,7 @@
 									<div class="space-y-2">
 										<label
 											for="name"
-											class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+											class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1"
 											>Identity</label
 										>
 										<input
@@ -134,13 +134,13 @@
 											id="name"
 											bind:value={formData.name}
 											placeholder="Your full name"
-											class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all dark:text-white"
+											class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
 										/>
 									</div>
 									<div class="space-y-2">
 										<label
 											for="subject"
-											class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+											class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1"
 											>Topic</label
 										>
 										<input
@@ -148,14 +148,14 @@
 											id="subject"
 											bind:value={formData.subject}
 											placeholder="Project, Collaboration, etc."
-											class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all dark:text-white"
+											class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all"
 										/>
 									</div>
 								</div>
 								<div class="space-y-2">
 									<label
 										for="message"
-										class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+										class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1"
 										>Narrative</label
 									>
 									<textarea
@@ -163,7 +163,7 @@
 										bind:value={formData.message}
 										placeholder="Tell me your story..."
 										rows="4"
-										class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all resize-none dark:text-white"
+										class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white focus:ring-4 focus:ring-emerald-500/10 outline-none transition-all resize-none"
 									></textarea>
 								</div>
 
@@ -184,9 +184,9 @@
 										Send to WhatsApp
 									</button>
 									<div
-										class="flex items-center justify-center px-8 border-2 border-slate-100 dark:border-slate-800 rounded-2xl group-hover:border-emerald-500/30 transition-colors"
+										class="flex items-center justify-center px-8 border-2 border-slate-100 rounded-2xl group-hover:border-emerald-500/30 transition-colors"
 									>
-										<p class="font-mono text-slate-600 dark:text-slate-400">
+										<p class="font-mono text-slate-600">
 											+62 852 3064 8617
 										</p>
 									</div>
@@ -204,9 +204,9 @@
 			>
 				<!-- Traditional Contact Details -->
 				<div
-					class="bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 shadow-xl border border-slate-100 dark:border-slate-800"
+					class="bg-white rounded-[2.5rem] p-10 shadow-xl border border-slate-100"
 				>
-					<h3 class="text-xl font-bold text-slate-900 dark:text-white mb-8">
+					<h3 class="text-xl font-bold text-slate-900 mb-8">
 						Other Channels
 					</h3>
 					<div class="space-y-8">
@@ -215,7 +215,7 @@
 							class="flex items-start gap-5 group"
 						>
 							<div
-								class="w-12 h-12 rounded-2xl bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300"
+								class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300"
 							>
 								<Mail size={22} />
 							</div>
@@ -225,7 +225,7 @@
 								>
 									Email
 								</p>
-								<p class="text-slate-900 dark:text-white font-medium break-all">
+								<p class="text-slate-900 font-medium break-all">
 									muhammadumarmansyur2001@gmail.com
 								</p>
 							</div>
@@ -233,7 +233,7 @@
 
 						<div class="flex items-start gap-5 group">
 							<div
-								class="w-12 h-12 rounded-2xl bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 flex items-center justify-center shrink-0"
+								class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shrink-0"
 							>
 								<MapPin size={22} />
 							</div>
@@ -243,7 +243,7 @@
 								>
 									Location
 								</p>
-								<p class="text-slate-900 dark:text-white font-medium">
+								<p class="text-slate-900 font-medium">
 									Rombasan, Pragaan, Sumenep
 								</p>
 								<p class="text-sm text-slate-500">Madura, Indonesia</p>
@@ -252,7 +252,7 @@
 
 						<div class="flex items-start gap-5 group">
 							<div
-								class="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 flex items-center justify-center shrink-0"
+								class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center shrink-0"
 							>
 								<Briefcase size={22} />
 							</div>
@@ -262,7 +262,7 @@
 								>
 									Organization
 								</p>
-								<p class="text-slate-900 dark:text-white font-medium">
+								<p class="text-slate-900 font-medium">
 									Madura Dev
 								</p>
 							</div>
@@ -270,7 +270,7 @@
 					</div>
 
 					<div
-						class="mt-12 pt-10 border-t border-slate-50 dark:border-slate-800"
+						class="mt-12 pt-10 border-t border-slate-50"
 					>
 						<p
 							class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-6 text-center"
@@ -281,14 +281,14 @@
 							<a
 								href="https://github.com/UmarMansyur"
 								target="_blank"
-								class="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-slate-900 hover:text-white dark:hover:bg-white dark:hover:text-slate-900 transition-all"
+								class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-slate-900 hover:text-white transition-all"
 							>
 								<Github size={20} />
 							</a>
 							<a
 								href="https://linkedin.com/in/umarmansyur"
 								target="_blank"
-								class="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-600 dark:text-slate-400 hover:bg-blue-600 hover:text-white transition-all"
+								class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-600 hover:bg-blue-600 hover:text-white transition-all"
 							>
 								<Linkedin size={20} />
 							</a>
@@ -298,7 +298,7 @@
 
 				<!-- Map Bento Box -->
 				<div
-					class="rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white dark:border-slate-900 h-64 relative group"
+					class="rounded-[2.5rem] overflow-hidden shadow-xl border-4 border-white h-64 relative group"
 				>
 					<iframe
 						title="Location Map"
@@ -310,14 +310,14 @@
 						class="grayscale group-hover:grayscale-0 transition-all duration-1000"
 					></iframe>
 					<div
-						class="absolute inset-x-4 bottom-4 p-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl border border-white/20"
+						class="absolute inset-x-4 bottom-4 p-4 bg-white/80 backdrop-blur-md rounded-2xl border border-white/20"
 					>
 						<p
-							class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-widest"
+							class="text-xs font-bold text-emerald-600 uppercase tracking-widest"
 						>
 							Base Operations
 						</p>
-						<p class="text-slate-900 dark:text-white font-semibold">
+						<p class="text-slate-900 font-semibold">
 							Madura, ID
 						</p>
 					</div>
