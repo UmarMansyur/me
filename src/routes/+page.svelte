@@ -406,14 +406,14 @@
           <img
             src={displayProfile.avatarUrl || "https://avatars.githubusercontent.com/u/70986579"}
             alt={displayProfile.name}
-            class="relative rounded-full w-32 h-32 md:w-40 md:h-40 border-4 border-white dark:border-slate-800 shadow-2xl object-cover"
+            class="relative rounded-full w-32 h-32 md:w-40 md:h-40 border-4 border-white shadow-2xl object-cover"
           />
         </div>
         
         <div>
           <!-- Greeting / Status -->
           <div class="mb-4 animate-fade-in">
-            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200/50 dark:border-emerald-800/50 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50/80 dark:bg-emerald-900/20 backdrop-blur-sm shadow-sm">
+            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200/50 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-600 bg-emerald-50/80 backdrop-blur-sm shadow-sm">
               <span class="relative flex h-2.5 w-2.5">
                 <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                 <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
@@ -423,10 +423,10 @@
           </div>
 
           <!-- Main Title -->
-          <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight text-slate-800 dark:text-white animate-slide-up">
+          <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight text-slate-800 animate-slide-up">
             Hi, I'm <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-emerald-500">{displayProfile.name.split(" ")[1] || displayProfile.name}</span>
           </h1>
-          <p class="mt-2 text-xl md:text-2xl font-medium text-slate-500 dark:text-slate-400">
+          <p class="mt-2 text-xl md:text-2xl font-medium text-slate-500">
             {displayProfile.title}
           </p>
         </div>
@@ -440,13 +440,13 @@
           <Skeleton variant="text" width="60%" height="24px" />
         </div>
       {:else}
-        <p class="text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl animate-slide-up" style="animation-delay: 0.1s">
+        <p class="text-lg md:text-xl text-slate-600 leading-relaxed max-w-2xl animate-slide-up" style="animation-delay: 0.1s">
           {displayProfile.description}
         </p>
       {/if}
 
       <!-- Location -->
-      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 font-medium animate-slide-up" style="animation-delay: 0.15s">
+      <div class="flex items-center gap-2 text-slate-500 font-medium animate-slide-up" style="animation-delay: 0.15s">
         <MapPin size={20} class="text-emerald-500" />
         <span class="text-lg">{displayProfile.location || "Sumenep, Madura"}</span>
       </div>
@@ -458,18 +458,18 @@
             <span>Get in Touch</span>
             <ArrowRight size={18} />
           </a>
-          <a href="/projects" class="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 px-8 py-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:shadow-md hover:-translate-y-1">
+          <a href="/projects" class="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 px-8 py-4 rounded-2xl bg-white border border-slate-200 text-slate-700 font-semibold hover:border-blue-500 hover:text-blue-600:text-blue-400 transition-all hover:shadow-md hover:-translate-y-1">
             Projects
           </a>
         </div>
         
-        <div class="hidden sm:block w-px h-10 bg-slate-200 dark:bg-slate-700"></div>
+        <div class="hidden sm:block w-px h-10 bg-slate-200"></div>
 
         <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
           <a
             href={displayProfile.github || "https://github.com/UmarMansyur"}
             target="_blank" rel="noopener noreferrer"
-            class="flex size-14 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-400 hover:text-slate-800 dark:hover:text-white bg-white dark:bg-slate-800 transition-all hover:-translate-y-1 hover:shadow-md"
+            class="flex size-14 items-center justify-center rounded-2xl border border-slate-200 text-slate-500 hover:border-slate-400 hover:text-slate-800:text-white bg-white transition-all hover:-translate-y-1 hover:shadow-md"
             aria-label="GitHub"
           >
             <Github size={24} />
@@ -477,7 +477,7 @@
           <a
             href={displayProfile.linkedin || "https://linkedin.com/in/umarmansyur"}
             target="_blank" rel="noopener noreferrer"
-            class="flex size-14 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-blue-500 hover:text-blue-600 bg-white dark:bg-slate-800 transition-all hover:-translate-y-1 hover:shadow-md"
+            class="flex size-14 items-center justify-center rounded-2xl border border-slate-200 text-slate-500 hover:border-blue-500 hover:text-blue-600 bg-white transition-all hover:-translate-y-1 hover:shadow-md"
             aria-label="LinkedIn"
           >
             <Linkedin size={24} />
@@ -492,7 +492,7 @@
         <!-- Glow effect -->
         <div class="absolute -inset-1 bg-gradient-to-br from-blue-500/20 to-emerald-400/20 rounded-[2.5rem] blur-2xl group-hover:blur-3xl transition-all duration-700 opacity-70"></div>
         
-        <div class="relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[2.5rem] p-8 shadow-2xl shadow-blue-900/10 border border-white dark:border-slate-700/50">
+        <div class="relative bg-white/90 backdrop-blur-2xl rounded-[2.5rem] p-8 shadow-2xl shadow-blue-900/10 border border-white">
           <!-- Header -->
           <div class="flex items-center justify-between mb-8">
             <div>
@@ -502,10 +502,10 @@
                   <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <p class="text-base font-bold text-slate-800 dark:text-slate-200">Platform Status</p>
+                <p class="text-base font-bold text-slate-800">Platform Status</p>
               </div>
             </div>
-            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 shadow-inner flex items-center justify-center border border-white dark:border-slate-600">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-slate-50 to-slate-100 shadow-inner flex items-center justify-center border border-white">
               <Icon src={RiLogosSvelteFill} size={28} className="text-orange-500 drop-shadow-sm" />
             </div>
           </div>
@@ -520,16 +520,16 @@
             <!-- Metrics -->
             <div class="space-y-4">
               <!-- Total Visitors Container -->
-              <div class="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-800 dark:to-slate-800/50 p-6 border border-blue-100/50 dark:border-slate-700/50 group-hover:border-blue-200 dark:group-hover:border-blue-900 transition-colors">
-                <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-2xl"></div>
+              <div class="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-blue-50 to-indigo-50/50 p-6 border border-blue-100/50 group-hover:border-blue-200:border-blue-900 transition-colors">
+                <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-500/10 rounded-full blur-2xl"></div>
                 <div class="flex items-center justify-between relative z-10">
                   <div>
-                    <p class="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-wider uppercase mb-1">Total Visitors</p>
-                    <p class="text-4xl lg:text-5xl font-bold font-mono text-slate-800 dark:text-white tracking-tight">
+                    <p class="text-xs font-bold text-blue-600 tracking-wider uppercase mb-1">Total Visitors</p>
+                    <p class="text-4xl lg:text-5xl font-bold font-mono text-slate-800 tracking-tight">
                       {siteStats.visitors.toLocaleString()}
                     </p>
                   </div>
-                  <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-900 shadow-sm flex items-center justify-center text-blue-500 border border-blue-100 dark:border-slate-800 transform transition-transform group-hover:scale-110 group-hover:rotate-3 duration-500">
+                  <div class="w-14 h-14 rounded-2xl bg-white shadow-sm flex items-center justify-center text-blue-500 border border-blue-100 transform transition-transform group-hover:scale-110 group-hover:rotate-3 duration-500">
                     <Eye size={24} />
                   </div>
                 </div>
@@ -537,22 +537,22 @@
 
               <!-- Reactions Row -->
               <div class="grid grid-cols-2 gap-4">
-                <div class="rounded-[1.5rem] bg-slate-50 dark:bg-slate-800/50 p-5 border border-slate-100 dark:border-slate-700/50 hover:bg-rose-50/50 dark:hover:bg-rose-900/10 transition-colors">
+                <div class="rounded-[1.5rem] bg-slate-50 p-5 border border-slate-100 hover:bg-rose-50/50:bg-rose-900/10 transition-colors">
                   <div class="flex items-center gap-2 mb-2 text-rose-500">
                     <ThumbsUp size={16} />
                     <span class="text-[10px] font-bold tracking-widest uppercase">Likes</span>
                   </div>
-                  <p class="text-3xl font-bold font-mono text-slate-800 dark:text-slate-100">
+                  <p class="text-3xl font-bold font-mono text-slate-800">
                     {siteStats.likes.toLocaleString()}
                   </p>
                 </div>
                 
-                <div class="rounded-[1.5rem] bg-slate-50 dark:bg-slate-800/50 p-5 border border-slate-100 dark:border-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-                  <div class="flex items-center gap-2 mb-2 text-slate-500 dark:text-slate-400">
+                <div class="rounded-[1.5rem] bg-slate-50 p-5 border border-slate-100 hover:bg-slate-100:bg-slate-800 transition-colors">
+                  <div class="flex items-center gap-2 mb-2 text-slate-500">
                     <ThumbsDown size={16} />
                     <span class="text-[10px] font-bold tracking-widest uppercase">Dislikes</span>
                   </div>
-                  <p class="text-3xl font-bold font-mono text-slate-800 dark:text-slate-100">
+                  <p class="text-3xl font-bold font-mono text-slate-800">
                     {siteStats.dislikes.toLocaleString()}
                   </p>
                 </div>
@@ -564,8 +564,8 @@
               <button
                 class="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-2xl font-bold text-sm transition-all duration-300
                 {siteStats.userReaction === 'like'
-                  ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30 scale-[1.02] ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-slate-900'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-white hover:shadow-md dark:hover:bg-slate-700 hover:-translate-y-0.5'}"
+                  ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30 scale-[1.02] ring-2 ring-blue-600 ring-offset-2'
+                  : 'bg-slate-100 text-slate-600 hover:bg-white hover:shadow-md:bg-slate-700 hover:-translate-y-0.5'}"
                 onclick={() => handleReaction("like")}
                 disabled={isReacting}
               >
@@ -576,8 +576,8 @@
               <button
                 class="w-16 flex items-center justify-center rounded-2xl transition-all duration-300
                 {siteStats.userReaction === 'dislike'
-                  ? 'bg-slate-800 dark:bg-slate-700 text-white shadow-xl scale-[1.02] py-4'
-                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-white hover:shadow-md dark:hover:bg-slate-700 hover:-translate-y-0.5 py-4'}"
+                  ? 'bg-slate-800 text-white shadow-xl scale-[1.02] py-4'
+                  : 'bg-slate-100 text-slate-400 hover:bg-white hover:shadow-md:bg-slate-700 hover:-translate-y-0.5 py-4'}"
                 onclick={() => handleReaction("dislike")}
                 disabled={isReacting}
               >
@@ -789,12 +789,12 @@
 <!-- Testimonials Section -->
 <section class="py-24 overflow-hidden relative">
   <!-- Dynamic background mesh -->
-  <div class="absolute inset-0 -z-10 bg-slate-50/50 dark:bg-slate-900/50">
+  <div class="absolute inset-0 -z-10 bg-slate-50/50">
     <div
-      class="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-50/50 dark:bg-blue-900/10 rounded-full blur-3xl opacity-50"
+      class="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-50/50 rounded-full blur-3xl opacity-50"
     ></div>
     <div
-      class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-50"
+      class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-indigo-50/50 rounded-full blur-3xl opacity-50"
     ></div>
   </div>
 
@@ -804,22 +804,22 @@
     >
       <div class="max-w-xl">
         <span
-          class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest block mb-3"
+          class="text-blue-600 font-bold text-xs uppercase tracking-widest block mb-3"
           >Feedback</span
         >
         <h2
-          class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white font-display"
+          class="text-4xl md:text-5xl font-bold text-slate-900 font-display"
         >
           Voices from the Community
         </h2>
-        <p class="mt-4 text-lg text-slate-500 dark:text-slate-400">
+        <p class="mt-4 text-lg text-slate-500">
           Discover what neighbors and collaborators are saying about our journey
           together.
         </p>
       </div>
       <div class="flex gap-2">
         <div
-          class="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400"
+          class="w-12 h-12 rounded-full border border-slate-200 flex items-center justify-center text-slate-400"
         >
           <MessageCircle size={20} />
         </div>
@@ -830,23 +830,23 @@
       <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
         {#each Array(3) as _}
           <div
-            class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm animate-pulse"
+            class="bg-white p-8 rounded-3xl shadow-sm animate-pulse"
           >
             <div
-              class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-1/4 mb-6"
+              class="h-4 bg-slate-100 rounded w-1/4 mb-6"
             ></div>
             <div
-              class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-full mb-2"
+              class="h-4 bg-slate-100 rounded w-full mb-2"
             ></div>
             <div
-              class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-3/4 mb-10"
+              class="h-4 bg-slate-100 rounded w-3/4 mb-10"
             ></div>
             <div class="flex items-center gap-4">
               <div
-                class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-full"
+                class="w-10 h-10 bg-slate-100 rounded-full"
               ></div>
               <div
-                class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-1/3"
+                class="h-4 bg-slate-100 rounded w-1/3"
               ></div>
             </div>
           </div>
@@ -858,10 +858,10 @@
           <div class="marquee-content flex gap-8">
             {#each [...testimonials, ...testimonials] as testimonial}
               <div
-                class="testimonial-card group relative p-8 rounded-[2rem] bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 w-[400px]"
+                class="testimonial-card group relative p-8 rounded-[2rem] bg-white border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 w-[400px]"
               >
                 <div
-                  class="absolute top-8 right-8 text-slate-100 dark:text-slate-700 group-hover:text-blue-50 dark:group-hover:text-blue-900/20 transition-colors duration-500"
+                  class="absolute top-8 right-8 text-slate-100 group-hover:text-blue-50:text-blue-900/20 transition-colors duration-500"
                 >
                   <svg
                     width="40"
@@ -879,7 +879,7 @@
                     <svg
                       class="w-5 h-5 {i < testimonial.rating
                         ? 'text-amber-400'
-                        : 'text-slate-200 dark:text-slate-700'}"
+                        : 'text-slate-200'}"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -891,21 +891,21 @@
                 </div>
 
                 <p
-                  class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed italic relative z-10"
+                  class="text-lg text-slate-700 leading-relaxed italic relative z-10"
                 >
                   "{testimonial.message}"
                 </p>
 
                 <div
-                  class="mt-8 pt-8 border-t border-slate-50 dark:border-slate-700 flex items-center gap-4"
+                  class="mt-8 pt-8 border-t border-slate-50 flex items-center gap-4"
                 >
                   <div
-                    class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold uppercase"
+                    class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold uppercase"
                   >
                     {testimonial.name.charAt(0)}
                   </div>
                   <div>
-                    <p class="font-bold text-slate-900 dark:text-white">
+                    <p class="font-bold text-slate-900">
                       {testimonial.name}
                     </p>
                     <p class="text-xs text-slate-400">Verified Visitor</p>
@@ -918,14 +918,14 @@
       </div>
     {:else}
       <div
-        class="text-center py-20 mb-20 bg-white/50 dark:bg-slate-800/50 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800"
+        class="text-center py-20 mb-20 bg-white/50 rounded-[3rem] border-2 border-dashed border-slate-200"
       >
         <div
-          class="w-16 h-16 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400"
+          class="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400"
         >
           <MessageCircle size={24} />
         </div>
-        <p class="text-slate-500 dark:text-slate-400 text-lg">
+        <p class="text-slate-500 text-lg">
           Your humble feedback will light up this space.
         </p>
         <p class="text-sm text-slate-400 mt-2">
@@ -941,13 +941,13 @@
           class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[2.5rem] blur opacity-10"
         ></div>
         <div
-          class="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 md:p-14 shadow-2xl border border-slate-100 dark:border-slate-800"
+          class="relative bg-white rounded-[2.5rem] p-10 md:p-14 shadow-2xl border border-slate-100"
         >
           <div class="text-center mb-10">
-            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+            <h3 class="text-2xl font-bold text-slate-900 mb-2">
               Leave a Legacy
             </h3>
-            <p class="text-slate-500 dark:text-slate-400">
+            <p class="text-slate-500">
               Your experience helps others understand the value we build
               together.
             </p>
@@ -955,18 +955,18 @@
 
           {#if testimonialSuccess}
             <div
-              class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/50 rounded-2xl p-6 mb-8 flex items-start gap-4 animate-scale-in"
+              class="bg-emerald-50 border border-emerald-100 rounded-2xl p-6 mb-8 flex items-start gap-4 animate-scale-in"
             >
               <div
-                class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0"
+                class="w-10 h-10 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600 flex-shrink-0"
               >
                 <CheckCircle size={20} />
               </div>
               <div>
-                <p class="text-emerald-800 dark:text-emerald-300 font-bold">
+                <p class="text-emerald-800 font-bold">
                   Feedback Received!
                 </p>
-                <p class="text-emerald-600 dark:text-emerald-400 text-sm mt-1">
+                <p class="text-emerald-600 text-sm mt-1">
                   Thank you for being part of this story. Your testimonial will
                   appear after a quick review.
                 </p>
@@ -985,14 +985,14 @@
               <div class="space-y-2">
                 <label
                   for="testimonial-name"
-                  class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+                  class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1"
                   >Identity</label
                 >
                 <input
                   type="text"
                   id="testimonial-name"
                   bind:value={testimonialForm.name}
-                  class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all dark:text-white"
+                  class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                   placeholder="What shall I call you?"
                   required
                 />
@@ -1000,14 +1000,14 @@
               <div class="space-y-2">
                 <label
                   for="testimonial-email"
-                  class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+                  class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1"
                   >Digital Mail (Privacy First)</label
                 >
                 <input
                   type="email"
                   id="testimonial-email"
                   bind:value={testimonialForm.email}
-                  class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all dark:text-white"
+                  class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all"
                   placeholder="your@email.com"
                 />
               </div>
@@ -1016,14 +1016,14 @@
             <div class="space-y-2">
               <label
                 for="testimonial-message"
-                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+                class="text-xs font-bold text-slate-500 uppercase tracking-widest ml-1"
                 >The Narrative</label
               >
               <textarea
                 id="testimonial-message"
                 bind:value={testimonialForm.message}
                 rows="4"
-                class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none dark:text-white"
+                class="w-full px-6 py-4 rounded-2xl bg-slate-50 border border-slate-100 focus:bg-white:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none"
                 placeholder="Paint your story here..."
                 required
               ></textarea>
@@ -1031,7 +1031,7 @@
 
             <div class="flex flex-col items-center gap-4">
               <span
-                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest"
+                class="text-xs font-bold text-slate-500 uppercase tracking-widest"
                 >Rate the Journey</span
               >
               <div class="flex gap-2">
@@ -1044,7 +1044,7 @@
                     <svg
                       class="w-10 h-10 {i < testimonialForm.rating
                         ? 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]'
-                        : 'text-slate-100 dark:text-slate-800'} transition-all duration-500"
+                        : 'text-slate-100'} transition-all duration-500"
                       fill="currentColor"
                       viewBox="0 0 20 20"
                     >
@@ -1062,7 +1062,7 @@
               disabled={isSubmittingTestimonial ||
                 !testimonialForm.name ||
                 !testimonialForm.message}
-              class="group relative w-full overflow-hidden rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold py-5 transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+              class="group relative w-full overflow-hidden rounded-2xl bg-slate-900 text-white font-bold py-5 transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50"
             >
               <div
                 class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
