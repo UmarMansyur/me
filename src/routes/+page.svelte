@@ -9,6 +9,10 @@
     ThumbsDown,
     Eye,
     Image,
+    MessageCircle,
+    Send,
+    CheckCircle,
+    Loader2,
   } from "lucide-svelte";
   import { onMount } from "svelte";
   import { RiLogosSvelteFill } from "svelte-icons-pack/ri";
@@ -124,6 +128,37 @@
     Array<{ id: number; name: string; message: string; rating: number }>
   >([]);
   let isLoading = $state(true);
+  let isReacting = $state(false);
+
+  // Testimonial form state
+  let testimonialForm = $state({
+    name: "",
+    email: "",
+    message: "",
+    rating: 5,
+  });
+  let isSubmittingTestimonial = $state(false);
+  let testimonialSuccess = $state(false);
+
+  async function submitTestimonial() {
+    if (!testimonialForm.name || !testimonialForm.message) return;
+
+    isSubmittingTestimonial = true;
+    try {
+      const res = await fetch("/api/testimonials", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(testimonialForm),
+      });
+      if (res.ok) {
+        testimonialSuccess = true;
+        testimonialForm = { name: "", email: "", message: "", rating: 5 };
+        setTimeout(() => (testimonialSuccess = false), 5000);
+      }
+    } finally {
+      isSubmittingTestimonial = false;
+    }
+  }
 
   const defaultProfile = {
     name: "Muhammad Umar Mansyur",
@@ -256,13 +291,52 @@
   }
 
   async function handleReaction(type: "like" | "dislike") {
-    const res = await fetch("/api/stats", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ action: type }),
-    });
-    if (res.ok) {
-      siteStats = await res.json();
+    if (isReacting) return; // Prevent double clicks
+    isReacting = true;
+
+    // Optimistic update for instant feedback
+    const previousStats = { ...siteStats };
+    const wasLiked = siteStats.userReaction === "like";
+    const wasDisliked = siteStats.userReaction === "dislike";
+
+    if (type === "like") {
+      if (wasLiked) {
+        siteStats.likes--;
+        siteStats.userReaction = null;
+      } else {
+        siteStats.likes++;
+        if (wasDisliked) siteStats.dislikes--;
+        siteStats.userReaction = "like";
+      }
+    } else {
+      if (wasDisliked) {
+        siteStats.dislikes--;
+        siteStats.userReaction = null;
+      } else {
+        siteStats.dislikes++;
+        if (wasLiked) siteStats.likes--;
+        siteStats.userReaction = "dislike";
+      }
+    }
+
+    try {
+      const res = await fetch("/api/stats", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: type }),
+      });
+      if (res.ok) {
+        // Sync with actual server state
+        siteStats = await res.json();
+      } else {
+        // Revert on error
+        siteStats = previousStats;
+      }
+    } catch {
+      // Revert on network error
+      siteStats = previousStats;
+    } finally {
+      isReacting = false;
     }
   }
 
@@ -316,217 +390,201 @@
 <div
   class="absolute inset-0 h-full w-full bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[30px_30px]"
 ></div>
-<section class="relative min-h-[90vh] flex items-center md:w-[80vw] mx-auto">
-  <div class="absolute inset-0 overflow-hidden">
-    <div
-      class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/5 rounded-full blur-3xl"
-    ></div>
-    <div
-      class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-600/5 rounded-full blur-3xl"
-    ></div>
+<section class="relative min-h-[90vh] flex items-center md:w-[85vw] max-w-7xl mx-auto py-10">
+  <div class="absolute inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[100px]"></div>
+    <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/10 rounded-full blur-[100px]"></div>
   </div>
 
-  <div
-    class="relative mx-auto px-4 py-20 sm:px-6 lg:px-8 md:grid md:grid-cols-12 gap-2 items-center"
-  >
-    <div class="hidden md:block col-span-3">
-      <img
-        src={displayProfile.avatarUrl ||
-          "https://avatars.githubusercontent.com/u/70986579"}
-        alt={displayProfile.name}
-        class="rounded-full w-64 h-64 border border-gray-200 p-3 object-cover"
-      />
-    </div>
-    <div class="col-span-6">
-      <!-- Greeting -->
-      <div class="mb-6 animate-fade-in">
-        <span
-          class="inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm text-green-500 bg-green-50"
-        >
-          <span class="relative flex h-2 w-2">
-            <span
-              class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"
-            ></span>
-            <span
-              class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"
-            ></span>
-          </span>
-          Open for opportunities
-        </span>
+  <div class="relative mx-auto px-4 py-20 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-12 gap-10 lg:gap-16 items-center w-full">
+    
+    <!-- LEFT SIDE: Profile Detail -->
+    <div class="col-span-1 md:col-span-7 flex flex-col justify-center space-y-6 lg:space-y-8 z-10 w-full">
+      <div class="flex flex-col sm:flex-row items-start sm:items-center gap-6 md:gap-8 animate-fade-in">
+        <div class="relative flex-shrink-0">
+          <div class="absolute inset-0 bg-gradient-to-tr from-blue-500 to-emerald-400 rounded-full blur-xl opacity-40"></div>
+          <img
+            src={displayProfile.avatarUrl || "https://avatars.githubusercontent.com/u/70986579"}
+            alt={displayProfile.name}
+            class="relative rounded-full w-32 h-32 md:w-40 md:h-40 border-4 border-white dark:border-slate-800 shadow-2xl object-cover"
+          />
+        </div>
+        
+        <div>
+          <!-- Greeting / Status -->
+          <div class="mb-4 animate-fade-in">
+            <span class="inline-flex items-center gap-2 rounded-full border border-emerald-200/50 dark:border-emerald-800/50 px-4 py-1.5 text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400 bg-emerald-50/80 dark:bg-emerald-900/20 backdrop-blur-sm shadow-sm">
+              <span class="relative flex h-2.5 w-2.5">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+              </span>
+              Open for opportunities
+            </span>
+          </div>
+
+          <!-- Main Title -->
+          <h1 class="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight text-slate-800 dark:text-white animate-slide-up">
+            Hi, I'm <span class="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-emerald-500">{displayProfile.name.split(" ")[1] || displayProfile.name}</span>
+          </h1>
+          <p class="mt-2 text-xl md:text-2xl font-medium text-slate-500 dark:text-slate-400">
+            {displayProfile.title}
+          </p>
+        </div>
       </div>
-      <!-- Main Title -->
-      <h1
-        class="text-4xl font-bold leading-tight text-gray-700 sm:text-5xl lg:text-6xl animate-slide-up"
-      >
-        Hi, I'm <span class="gradient-text"
-          >{displayProfile.name.split(" ")[1]}</span
-        >
-        <span class="block mt-2 text-gray-500">
-          {displayProfile.title}
-        </span>
-      </h1>
 
       <!-- Description -->
       {#if isLoading}
-        <div class="mt-6 space-y-2">
-          <Skeleton variant="text" width="90%" />
-          <Skeleton variant="text" width="80%" />
-          <Skeleton variant="text" width="60%" />
+        <div class="space-y-3 pt-2">
+          <Skeleton variant="text" width="90%" height="24px" />
+          <Skeleton variant="text" width="80%" height="24px" />
+          <Skeleton variant="text" width="60%" height="24px" />
         </div>
       {:else}
-        <p
-          class="mt-6 text-lg text-dark-400 leading-relaxed max-w-2xl animate-slide-up"
-          style="animation-delay: 0.1s"
-        >
+        <p class="text-lg md:text-xl text-slate-600 dark:text-slate-300 leading-relaxed max-w-2xl animate-slide-up" style="animation-delay: 0.1s">
           {displayProfile.description}
         </p>
       {/if}
 
       <!-- Location -->
-      <div
-        class="mt-4 flex items-center gap-2 text-dark-500 animate-slide-up"
-        style="animation-delay: 0.15s"
-      >
-        <MapPin size={16} />
-        <span class="text-sm"
-          >{displayProfile.location || "Sumenep, Madura"}</span
-        >
+      <div class="flex items-center gap-2 text-slate-500 dark:text-slate-400 font-medium animate-slide-up" style="animation-delay: 0.15s">
+        <MapPin size={20} class="text-emerald-500" />
+        <span class="text-lg">{displayProfile.location || "Sumenep, Madura"}</span>
       </div>
 
-      <!-- CTA Buttons -->
-      <div
-        class="mt-8 flex flex-wrap items-center gap-4 animate-slide-up"
-        style="animation-delay: 0.2s"
-      >
-        <a href="/contact" class="btn-primary group">
-          <span>Get in Touch</span>
-          <ArrowRight
-            size={18}
-            class="transition-transform group-hover:translate-x-1"
-          />
-        </a>
-        <a href="/projects" class="btn-secondary"> View Projects </a>
-      </div>
+      <!-- CTA & Socials -->
+      <div class="flex flex-col sm:flex-row flex-wrap items-start sm:items-center gap-6 pt-4 animate-slide-up" style="animation-delay: 0.2s">
+        <div class="flex items-center gap-4 w-full sm:w-auto">
+          <a href="/contact" class="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 px-8 py-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-all shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-1">
+            <span>Get in Touch</span>
+            <ArrowRight size={18} />
+          </a>
+          <a href="/projects" class="flex-1 sm:flex-none inline-flex justify-center items-center gap-2 px-8 py-4 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 font-semibold hover:border-blue-500 hover:text-blue-600 dark:hover:text-blue-400 transition-all hover:shadow-md hover:-translate-y-1">
+            Projects
+          </a>
+        </div>
+        
+        <div class="hidden sm:block w-px h-10 bg-slate-200 dark:bg-slate-700"></div>
 
-      <!-- Social Links -->
-      <div
-        class="mt-8 flex items-center gap-4 animate-slide-up"
-        style="animation-delay: 0.25s"
-      >
-        <a
-          href={displayProfile.github || "https://github.com/UmarMansyur"}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex size-11 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-all hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 hover:-translate-y-1"
-          aria-label="GitHub"
-        >
-          <Github size={20} />
-        </a>
-        <a
-          href={displayProfile.linkedin ||
-            "https://linkedin.com/in/umarmansyur"}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex size-11 items-center justify-center rounded-lg border border-gray-200 text-gray-500 transition-all hover:border-blue-500 hover:text-blue-600 hover:bg-blue-50 hover:-translate-y-1"
-          aria-label="LinkedIn"
-        >
-          <Linkedin size={20} />
-        </a>
+        <div class="flex items-center gap-3 w-full sm:w-auto justify-center sm:justify-start">
+          <a
+            href={displayProfile.github || "https://github.com/UmarMansyur"}
+            target="_blank" rel="noopener noreferrer"
+            class="flex size-14 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-slate-400 hover:text-slate-800 dark:hover:text-white bg-white dark:bg-slate-800 transition-all hover:-translate-y-1 hover:shadow-md"
+            aria-label="GitHub"
+          >
+            <Github size={24} />
+          </a>
+          <a
+            href={displayProfile.linkedin || "https://linkedin.com/in/umarmansyur"}
+            target="_blank" rel="noopener noreferrer"
+            class="flex size-14 items-center justify-center rounded-2xl border border-slate-200 dark:border-slate-700 text-slate-500 hover:border-blue-500 hover:text-blue-600 bg-white dark:bg-slate-800 transition-all hover:-translate-y-1 hover:shadow-md"
+            aria-label="LinkedIn"
+          >
+            <Linkedin size={24} />
+          </a>
+        </div>
       </div>
     </div>
-    <div class="md:flex hidden col-span-3 ms-auto">
-      <div class="flex flex-col gap-4 w-full">
-        <h3 class="text-lg font-semibold text-gray-700 mb-2">Site Stats</h3>
 
-        <div class="flex gap-10">
+    <!-- RIGHT SIDE: Analytics -->
+    <div class="col-span-1 md:col-span-5 w-full mt-10 md:mt-0 relative z-10 animate-fade-in" style="animation-delay: 0.3s">
+      <div class="group relative w-full max-w-[420px] mx-auto md:ms-auto md:me-0">
+        <!-- Glow effect -->
+        <div class="absolute -inset-1 bg-gradient-to-br from-blue-500/20 to-emerald-400/20 rounded-[2.5rem] blur-2xl group-hover:blur-3xl transition-all duration-700 opacity-70"></div>
+        
+        <div class="relative bg-white/90 dark:bg-slate-900/90 backdrop-blur-2xl rounded-[2.5rem] p-8 shadow-2xl shadow-blue-900/10 border border-white dark:border-slate-700/50">
+          <!-- Header -->
+          <div class="flex items-center justify-between mb-8">
+            <div>
+              <h3 class="text-[10px] font-bold text-slate-400 tracking-widest uppercase mb-1">Live Analytics</h3>
+              <div class="flex items-center gap-2">
+                <span class="relative flex h-2 w-2">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <p class="text-base font-bold text-slate-800 dark:text-slate-200">Platform Status</p>
+              </div>
+            </div>
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 shadow-inner flex items-center justify-center border border-white dark:border-slate-600">
+              <Icon src={RiLogosSvelteFill} size={28} className="text-orange-500 drop-shadow-sm" />
+            </div>
+          </div>
+          
           {#if isLoading}
-            {#each Array(3) as _}
-              <div class="stat-card">
-                <div class="flex items-center gap-3">
-                  <Skeleton variant="circle" width="48px" height="48px" />
-                  <div class="space-y-2">
-                    <Skeleton variant="text" width="40px" height="24px" />
-                    <Skeleton variant="text" width="60px" height="16px" />
+            <div class="space-y-6">
+              {#each Array(3) as _}
+                <Skeleton variant="text" width="100%" height="72px" class="rounded-2xl" />
+              {/each}
+            </div>
+          {:else}
+            <!-- Metrics -->
+            <div class="space-y-4">
+              <!-- Total Visitors Container -->
+              <div class="relative overflow-hidden rounded-[1.5rem] bg-gradient-to-br from-blue-50 to-indigo-50/50 dark:from-slate-800 dark:to-slate-800/50 p-6 border border-blue-100/50 dark:border-slate-700/50 group-hover:border-blue-200 dark:group-hover:border-blue-900 transition-colors">
+                <div class="absolute -right-6 -top-6 w-32 h-32 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-2xl"></div>
+                <div class="flex items-center justify-between relative z-10">
+                  <div>
+                    <p class="text-xs font-bold text-blue-600 dark:text-blue-400 tracking-wider uppercase mb-1">Total Visitors</p>
+                    <p class="text-4xl lg:text-5xl font-bold font-mono text-slate-800 dark:text-white tracking-tight">
+                      {siteStats.visitors.toLocaleString()}
+                    </p>
+                  </div>
+                  <div class="w-14 h-14 rounded-2xl bg-white dark:bg-slate-900 shadow-sm flex items-center justify-center text-blue-500 border border-blue-100 dark:border-slate-800 transform transition-transform group-hover:scale-110 group-hover:rotate-3 duration-500">
+                    <Eye size={24} />
                   </div>
                 </div>
               </div>
-            {/each}
-          {:else}
-            <!-- Visitors Count -->
-            <div class="stat-card group">
-              <div class="flex items-center gap-3">
-                <div class="stat-icon">
-                  <Eye size={24} />
-                </div>
-                <div>
-                  <p class="text-2xl font-bold text-gray-800">
-                    {siteStats.visitors}
+
+              <!-- Reactions Row -->
+              <div class="grid grid-cols-2 gap-4">
+                <div class="rounded-[1.5rem] bg-slate-50 dark:bg-slate-800/50 p-5 border border-slate-100 dark:border-slate-700/50 hover:bg-rose-50/50 dark:hover:bg-rose-900/10 transition-colors">
+                  <div class="flex items-center gap-2 mb-2 text-rose-500">
+                    <ThumbsUp size={16} />
+                    <span class="text-[10px] font-bold tracking-widest uppercase">Likes</span>
+                  </div>
+                  <p class="text-3xl font-bold font-mono text-slate-800 dark:text-slate-100">
+                    {siteStats.likes.toLocaleString()}
                   </p>
-                  <p class="text-sm text-gray-500">Visitors</p>
+                </div>
+                
+                <div class="rounded-[1.5rem] bg-slate-50 dark:bg-slate-800/50 p-5 border border-slate-100 dark:border-slate-700/50 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
+                  <div class="flex items-center gap-2 mb-2 text-slate-500 dark:text-slate-400">
+                    <ThumbsDown size={16} />
+                    <span class="text-[10px] font-bold tracking-widest uppercase">Dislikes</span>
+                  </div>
+                  <p class="text-3xl font-bold font-mono text-slate-800 dark:text-slate-100">
+                    {siteStats.dislikes.toLocaleString()}
+                  </p>
                 </div>
               </div>
             </div>
 
-            <!-- Likes -->
-            <div class="stat-card group">
-              <div class="flex items-center gap-3">
-                <div class="stat-icon">
-                  <ThumbsUp size={24} />
-                </div>
-                <div>
-                  <p class="text-2xl font-bold text-gray-800">
-                    {siteStats.likes}
-                  </p>
-                  <p class="text-sm text-gray-500">Likes</p>
-                </div>
-              </div>
-            </div>
-
-            <!-- Dislikes -->
-            <div class="stat-card group">
-              <div class="flex items-center gap-3">
-                <div class="stat-icon">
-                  <ThumbsDown size={24} />
-                </div>
-                <div>
-                  <p class="text-2xl font-bold text-gray-800">
-                    {siteStats.dislikes}
-                  </p>
-                  <p class="text-sm text-gray-500">Dislikes</p>
-                </div>
-              </div>
+            <!-- Interaction Buttons -->
+            <div class="mt-8 flex items-center gap-3">
+              <button
+                class="flex-1 flex items-center justify-center gap-3 py-4 px-6 rounded-2xl font-bold text-sm transition-all duration-300
+                {siteStats.userReaction === 'like'
+                  ? 'bg-blue-600 text-white shadow-xl shadow-blue-500/30 scale-[1.02] ring-2 ring-blue-600 ring-offset-2 dark:ring-offset-slate-900'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-white hover:shadow-md dark:hover:bg-slate-700 hover:-translate-y-0.5'}"
+                onclick={() => handleReaction("like")}
+                disabled={isReacting}
+              >
+                <ThumbsUp size={20} class={siteStats.userReaction === 'like' ? 'fill-current' : ''} />
+                <span class="tracking-wide">Leave a Like</span>
+              </button>
+              
+              <button
+                class="w-16 flex items-center justify-center rounded-2xl transition-all duration-300
+                {siteStats.userReaction === 'dislike'
+                  ? 'bg-slate-800 dark:bg-slate-700 text-white shadow-xl scale-[1.02] py-4'
+                  : 'bg-slate-100 dark:bg-slate-800 text-slate-400 hover:bg-white hover:shadow-md dark:hover:bg-slate-700 hover:-translate-y-0.5 py-4'}"
+                onclick={() => handleReaction("dislike")}
+                disabled={isReacting}
+              >
+                <ThumbsDown size={20} class={siteStats.userReaction === 'dislike' ? 'fill-current' : ''} />
+              </button>
             </div>
           {/if}
-        </div>
-
-        <!-- Interactive Buttons -->
-        <div class="flex gap-2 mt-4">
-          <button
-            class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 {siteStats.userReaction ===
-            'like'
-              ? 'bg-blue-100 text-blue-600'
-              : 'text-blue-600 hover:bg-blue-50'}"
-            onclick={() => handleReaction("like")}
-          >
-            <ThumbsUp
-              size={18}
-              class={siteStats.userReaction === "like" ? "fill-blue-600" : ""}
-            />
-            <span class="text-sm font-medium">Like</span>
-          </button>
-          <button
-            class="flex-1 flex items-center justify-center gap-2 py-2 px-4 rounded-lg transition-all duration-300 hover:scale-105 {siteStats.userReaction ===
-            'dislike'
-              ? 'bg-red-100 text-red-600'
-              : 'text-gray-600 hover:bg-gray-100'}"
-            onclick={() => handleReaction("dislike")}
-          >
-            <ThumbsDown
-              size={18}
-              class={siteStats.userReaction === "dislike" ? "fill-red-600" : ""}
-            />
-            <span class="text-sm font-medium">Dislike</span>
-          </button>
         </div>
       </div>
     </div>
@@ -729,69 +787,304 @@
 </section>
 
 <!-- Testimonials Section -->
-{#if isLoading}
-  <section class="py-20 overflow-hidden">
-    <div class="mx-auto md:max-w-[80vw] px-4 sm:px-6 lg:px-8 mb-10">
-      <Skeleton variant="text" width="200px" height="32px" class="mb-2" />
-      <Skeleton variant="text" width="150px" height="20px" />
-    </div>
-    <div class="flex gap-6 px-10 overflow-hidden">
-      {#each Array(4) as _}
-        <div class="testimonial-card">
-          <div class="flex gap-1 mb-3">
-            {#each Array(5) as _}
-              <div class="size-4 bg-gray-200 rounded-full animate-pulse"></div>
-            {/each}
-          </div>
-          <div class="space-y-2 mb-3">
-            <Skeleton variant="text" width="100%" />
-            <Skeleton variant="text" width="90%" />
-          </div>
-          <Skeleton variant="text" width="40%" />
-        </div>
-      {/each}
-    </div>
-  </section>
-{:else if testimonials.length > 0}
-  <section class="py-20 overflow-hidden">
-    <div class="mx-auto md:max-w-[80vw] px-4 sm:px-6 lg:px-8 mb-10">
-      <h2 class="section-title">What People Say</h2>
-      <p class="mt-2 section-subtitle">Feedback from visitors</p>
-    </div>
+<section class="py-24 overflow-hidden relative">
+  <!-- Dynamic background mesh -->
+  <div class="absolute inset-0 -z-10 bg-slate-50/50 dark:bg-slate-900/50">
+    <div
+      class="absolute top-0 right-0 w-1/2 h-1/2 bg-blue-50/50 dark:bg-blue-900/10 rounded-full blur-3xl opacity-50"
+    ></div>
+    <div
+      class="absolute bottom-0 left-0 w-1/2 h-1/2 bg-indigo-50/50 dark:bg-indigo-900/10 rounded-full blur-3xl opacity-50"
+    ></div>
+  </div>
 
-    <div class="relative">
-      <div class="marquee-container">
-        <div class="marquee-content">
-          {#each [...testimonials, ...testimonials] as testimonial}
-            <div class="testimonial-card">
-              <div class="flex gap-0.5 mb-3">
-                {#each Array(5) as _, i}
-                  <svg
-                    class="w-4 h-4 {i < testimonial.rating
-                      ? 'text-yellow-400'
-                      : 'text-gray-300'}"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    <path
-                      d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
-                    />
-                  </svg>
-                {/each}
-              </div>
-              <p class="text-sm text-gray-600 mb-3 line-clamp-3">
-                "{testimonial.message}"
-              </p>
-              <p class="text-sm font-semibold text-gray-800">
-                — {testimonial.name}
-              </p>
-            </div>
-          {/each}
+  <div class="mx-auto md:max-w-[1200px] px-4 sm:px-6 lg:px-8">
+    <div
+      class="flex flex-col md:flex-row items-end justify-between mb-16 gap-6"
+    >
+      <div class="max-w-xl">
+        <span
+          class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest block mb-3"
+          >Feedback</span
+        >
+        <h2
+          class="text-4xl md:text-5xl font-bold text-slate-900 dark:text-white font-display"
+        >
+          Voices from the Community
+        </h2>
+        <p class="mt-4 text-lg text-slate-500 dark:text-slate-400">
+          Discover what neighbors and collaborators are saying about our journey
+          together.
+        </p>
+      </div>
+      <div class="flex gap-2">
+        <div
+          class="w-12 h-12 rounded-full border border-slate-200 dark:border-slate-800 flex items-center justify-center text-slate-400"
+        >
+          <MessageCircle size={20} />
         </div>
       </div>
     </div>
-  </section>
-{/if}
+
+    {#if isLoading}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+        {#each Array(3) as _}
+          <div
+            class="bg-white dark:bg-slate-800 p-8 rounded-3xl shadow-sm animate-pulse"
+          >
+            <div
+              class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-1/4 mb-6"
+            ></div>
+            <div
+              class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-full mb-2"
+            ></div>
+            <div
+              class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-3/4 mb-10"
+            ></div>
+            <div class="flex items-center gap-4">
+              <div
+                class="w-10 h-10 bg-slate-100 dark:bg-slate-700 rounded-full"
+              ></div>
+              <div
+                class="h-4 bg-slate-100 dark:bg-slate-700 rounded w-1/3"
+              ></div>
+            </div>
+          </div>
+        {/each}
+      </div>
+    {:else if testimonials.length > 0}
+      <div class="relative mb-20">
+        <div class="marquee-container py-4">
+          <div class="marquee-content flex gap-8">
+            {#each [...testimonials, ...testimonials] as testimonial}
+              <div
+                class="testimonial-card group relative p-8 rounded-[2rem] bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 shadow-sm hover:shadow-xl hover:-translate-y-2 transition-all duration-500 w-[400px]"
+              >
+                <div
+                  class="absolute top-8 right-8 text-slate-100 dark:text-slate-700 group-hover:text-blue-50 dark:group-hover:text-blue-900/20 transition-colors duration-500"
+                >
+                  <svg
+                    width="40"
+                    height="40"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                    ><path
+                      d="M14.017 21L14.017 18C14.017 16.8954 14.9124 16 16.017 16H19.017C19.5693 16 20.017 15.5523 20.017 15V9C20.017 8.44772 19.5693 8 19.017 8H16.017C15.4647 8 15.017 8.44772 15.017 9V12C15.017 12.5523 14.5693 13 14.017 13H12.017V21H14.017ZM6.017 21L6.017 18C6.017 16.8954 6.91243 16 8.017 16H11.017C11.5693 16 12.017 15.5523 12.017 15V9C12.017 8.44772 11.5693 8 11.017 8H8.017C7.46472 8 7.017 8.44772 7.017 9V12C7.017 12.5523 6.56929 13 6.017 13H4.017V21H6.017Z"
+                    /></svg
+                  >
+                </div>
+
+                <div class="flex gap-1 mb-6">
+                  {#each Array(5) as _, i}
+                    <svg
+                      class="w-5 h-5 {i < testimonial.rating
+                        ? 'text-amber-400'
+                        : 'text-slate-200 dark:text-slate-700'}"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                      />
+                    </svg>
+                  {/each}
+                </div>
+
+                <p
+                  class="text-lg text-slate-700 dark:text-slate-300 leading-relaxed italic relative z-10"
+                >
+                  "{testimonial.message}"
+                </p>
+
+                <div
+                  class="mt-8 pt-8 border-t border-slate-50 dark:border-slate-700 flex items-center gap-4"
+                >
+                  <div
+                    class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 dark:text-blue-400 font-bold uppercase"
+                  >
+                    {testimonial.name.charAt(0)}
+                  </div>
+                  <div>
+                    <p class="font-bold text-slate-900 dark:text-white">
+                      {testimonial.name}
+                    </p>
+                    <p class="text-xs text-slate-400">Verified Visitor</p>
+                  </div>
+                </div>
+              </div>
+            {/each}
+          </div>
+        </div>
+      </div>
+    {:else}
+      <div
+        class="text-center py-20 mb-20 bg-white/50 dark:bg-slate-800/50 rounded-[3rem] border-2 border-dashed border-slate-200 dark:border-slate-800"
+      >
+        <div
+          class="w-16 h-16 bg-slate-100 dark:bg-slate-900 rounded-full flex items-center justify-center mx-auto mb-4 text-slate-400"
+        >
+          <MessageCircle size={24} />
+        </div>
+        <p class="text-slate-500 dark:text-slate-400 text-lg">
+          Your humble feedback will light up this space.
+        </p>
+        <p class="text-sm text-slate-400 mt-2">
+          Become the pioneer, share your thoughts below.
+        </p>
+      </div>
+    {/if}
+
+    <!-- Redesigned Testimonial Form -->
+    <div class="max-w-3xl mx-auto">
+      <div class="relative">
+        <div
+          class="absolute -inset-1 bg-gradient-to-r from-blue-500 to-indigo-600 rounded-[2.5rem] blur opacity-10"
+        ></div>
+        <div
+          class="relative bg-white dark:bg-slate-900 rounded-[2.5rem] p-10 md:p-14 shadow-2xl border border-slate-100 dark:border-slate-800"
+        >
+          <div class="text-center mb-10">
+            <h3 class="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+              Leave a Legacy
+            </h3>
+            <p class="text-slate-500 dark:text-slate-400">
+              Your experience helps others understand the value we build
+              together.
+            </p>
+          </div>
+
+          {#if testimonialSuccess}
+            <div
+              class="bg-emerald-50 dark:bg-emerald-900/10 border border-emerald-100 dark:border-emerald-900/50 rounded-2xl p-6 mb-8 flex items-start gap-4 animate-scale-in"
+            >
+              <div
+                class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 dark:text-emerald-400 flex-shrink-0"
+              >
+                <CheckCircle size={20} />
+              </div>
+              <div>
+                <p class="text-emerald-800 dark:text-emerald-300 font-bold">
+                  Feedback Received!
+                </p>
+                <p class="text-emerald-600 dark:text-emerald-400 text-sm mt-1">
+                  Thank you for being part of this story. Your testimonial will
+                  appear after a quick review.
+                </p>
+              </div>
+            </div>
+          {/if}
+
+          <form
+            onsubmit={(e) => {
+              e.preventDefault();
+              submitTestimonial();
+            }}
+            class="space-y-6"
+          >
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-2">
+                <label
+                  for="testimonial-name"
+                  class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+                  >Identity</label
+                >
+                <input
+                  type="text"
+                  id="testimonial-name"
+                  bind:value={testimonialForm.name}
+                  class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all dark:text-white"
+                  placeholder="What shall I call you?"
+                  required
+                />
+              </div>
+              <div class="space-y-2">
+                <label
+                  for="testimonial-email"
+                  class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+                  >Digital Mail (Privacy First)</label
+                >
+                <input
+                  type="email"
+                  id="testimonial-email"
+                  bind:value={testimonialForm.email}
+                  class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all dark:text-white"
+                  placeholder="your@email.com"
+                />
+              </div>
+            </div>
+
+            <div class="space-y-2">
+              <label
+                for="testimonial-message"
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest ml-1"
+                >The Narrative</label
+              >
+              <textarea
+                id="testimonial-message"
+                bind:value={testimonialForm.message}
+                rows="4"
+                class="w-full px-6 py-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-700 focus:bg-white dark:focus:bg-slate-800 focus:ring-4 focus:ring-blue-500/10 outline-none transition-all resize-none dark:text-white"
+                placeholder="Paint your story here..."
+                required
+              ></textarea>
+            </div>
+
+            <div class="flex flex-col items-center gap-4">
+              <span
+                class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest"
+                >Rate the Journey</span
+              >
+              <div class="flex gap-2">
+                {#each Array(5) as _, i}
+                  <button
+                    type="button"
+                    onclick={() => (testimonialForm.rating = i + 1)}
+                    class="p-2 hover:scale-125 transition-all duration-300"
+                  >
+                    <svg
+                      class="w-10 h-10 {i < testimonialForm.rating
+                        ? 'text-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]'
+                        : 'text-slate-100 dark:text-slate-800'} transition-all duration-500"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                    >
+                      <path
+                        d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"
+                      />
+                    </svg>
+                  </button>
+                {/each}
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={isSubmittingTestimonial ||
+                !testimonialForm.name ||
+                !testimonialForm.message}
+              class="group relative w-full overflow-hidden rounded-2xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-bold py-5 transition-all duration-300 hover:scale-[1.02] active:scale-95 disabled:opacity-50"
+            >
+              <div
+                class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+              ></div>
+              <span
+                class="relative z-10 flex items-center justify-center gap-3"
+              >
+                {#if isSubmittingTestimonial}
+                  <Loader2 size={24} class="animate-spin" />
+                  Processing...
+                {:else}
+                  <Send size={20} />
+                  Submit Your Feedback
+                {/if}
+              </span>
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- CTA Section -->
 <section class="border-dark-800 py-20">
